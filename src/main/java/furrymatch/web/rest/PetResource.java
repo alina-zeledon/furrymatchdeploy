@@ -180,7 +180,7 @@ public class PetResource {
         String petId = userService.getUserWithAuthorities().get().getImageUrl();
         Long ownerId = userService.getUserWithAuthorities().get().getId();
         log.debug("PET ID: ", petId);
-        SearchCriteria searchCriteria = searchCriteriaService.findOne(Long.valueOf(petId));
+        SearchCriteria searchCriteria = searchCriteriaService.findOneAlina(Long.valueOf(petId));
         log.debug("Search Criteria: ", searchCriteria);
         List<Pet> pets = petService.searchPets(searchCriteria, ownerId);
         return ResponseEntity.ok().body(pets);
