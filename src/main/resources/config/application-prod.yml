@@ -32,7 +32,7 @@ spring:
     livereload:
       enabled: false
   datasource:
-     type: com.zaxxer.hikari.HikariDataSource
+    type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://furrymatchtest.mysql.database.azure.com:3306/furrymatch?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
     username: furrymatch
     password: Cenfotec1234
@@ -53,8 +53,6 @@ spring:
     port: 587
     username: furrymatchapp@gmail.com #Replace this field with your Gmail username.
     password: ndxcpxqjmjzyfihr #Replace this field with your Gmail password/App password.
-    protocol: smtp
-    tls: true
   thymeleaf:
     cache: true
 
