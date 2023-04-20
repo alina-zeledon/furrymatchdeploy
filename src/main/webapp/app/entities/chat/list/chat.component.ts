@@ -43,6 +43,10 @@ export class ChatComponent implements OnInit {
 
   ngOnInit(): void {
     //this.load();
+    this.listChats();
+  }
+
+  listChats(): void {
     this.ownerService.findUserChats().subscribe(result => {
       if (result.body) {
         this.chats = result.body.filter((value, index, self) => self.findIndex(v => v.id === value.id) === index);
@@ -52,7 +56,6 @@ export class ChatComponent implements OnInit {
         array.forEach((item, index) => {
           if (item.phoneNumber) {
             this.chatService.find(item.phoneNumber).subscribe(result => {
-              console.log(result.body?.message);
               array2[index] = { ...array[index], message: result.body?.message };
             });
           }
@@ -62,7 +65,7 @@ export class ChatComponent implements OnInit {
     });
   }
 
-  delete(): void {
+  delete(id: any): void {
     Swal.fire({
       title: '¿Deseás eliminar la conversación?',
       text: 'Si hacés click en el botón de Sí perderás toda la información del mismo.',
@@ -76,11 +79,9 @@ export class ChatComponent implements OnInit {
       denyButtonColor: '#3381f6',
     }).then((result: any) => {
       if (result.isConfirmed) {
-        // this.chatService.delete(this.pet?.id).subscribe(() => {
-        // this.router.navigate(['/chat']);
-        //   console.log('borrado');
-        // });
-        console.log('entro');
+        this.chatService.delete(id).subscribe(result => {
+          this.listChats();
+        });
       } else if (result.isDenied) {
         console.log('no');
       }

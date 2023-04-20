@@ -107,12 +107,13 @@ public class ChatService {
     }
 
     /**
-     * Delete the chat by id.
+     * Delete the chats by match_id.
      *
      * @param id the id of the entity.
      */
     public void delete(Long id) {
         log.debug("Request to delete Chat : {}", id);
-        chatRepository.deleteById(id);
+        // chatRepository.deleteById(id);
+        chatRepository.deleteChats(id);
     }
 }

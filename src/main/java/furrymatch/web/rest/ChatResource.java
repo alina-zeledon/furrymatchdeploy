@@ -159,7 +159,7 @@ public class ChatResource {
     }
 
     /**
-     * {@code DELETE  /chats/:id} : delete the "id" chat.
+     * {@code DELETE  /chats/:id} : delete the "match_id" chats.
      *
      * @param id the id of the chat to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.

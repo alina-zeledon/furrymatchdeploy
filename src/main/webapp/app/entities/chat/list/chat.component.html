@@ -6,7 +6,7 @@
   <div>
     <div class="wrapper">
       <div class="list-wrapper">
-        <div *ngFor="let chat of chatArrays?.slice()?.reverse()">
+        <div *ngFor="let chat of chatArrays">
           <div class="list-chat-wrapper">
             <div class="image">
               <img src="{{ chat.photo }}" class="img-profile" />
@@ -17,7 +17,7 @@
                 {{ chat.message?.substring(0, 20) }}
               </div>
             </div>
-            <div class="trash-icon" (click)="delete()">
+            <div class="trash-icon" (click)="delete(chat.identityNumber)">
               <img src="../content/images/delete_icon.png" />
             </div>
           </div>

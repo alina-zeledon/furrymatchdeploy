@@ -11,4 +11,8 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ChatRepository extends JpaRepository<Chat, Long> {}
+public interface ChatRepository extends JpaRepository<Chat, Long> {
+    @Modifying
+    @Query(value = "DELETE FROM chat WHERE match_id = :id", nativeQuery = true)
+    void deleteChats(@Param("id") Long id);
+}
