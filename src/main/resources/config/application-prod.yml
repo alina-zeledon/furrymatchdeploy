@@ -49,14 +49,12 @@ spring:
   liquibase:
     contexts: prod
   mail:
-    host: localhost
-    port: 25
-    username:
-    password:
+    host: smtp.gmail.com
+    port: 587
+    username: furrymatchapp@gmail.com #Replace this field with your Gmail username.
+    password: ndxcpxqjmjzyfihr #Replace this field with your Gmail password/App password.
   thymeleaf:
     cache: true
-  main:
-    web-application-type: servlet
 
 # ===================================================================
 # To enable TLS in production, generate a certificate using:
@@ -78,7 +76,7 @@ spring:
 #     ciphers: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 ,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 ,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 ,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA,TLS_RSA_WITH_CAMELLIA_256_CBC_SHA,TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA,TLS_RSA_WITH_CAMELLIA_128_CBC_SHA
 # ===================================================================
 server:
-  port: 9090
+  port: 8080
   shutdown: graceful # see https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-graceful-shutdown
   compression:
     enabled: true
@@ -104,17 +102,7 @@ jhipster:
       # security key (this key should be unique for your application, and kept secret)
       key: 7b4bc4aaec3f15078a41595e3bc28ceee157e64f4ad2594f0d708afdebbab15744a8cdff5d249c69c7a5e980f30681ce0842
   mail: # specific JHipster mail property, for standard properties see MailProperties
-    base-url: https://furrymatch.azurewebsites.net # Modify according to your server's URL
-    host: smtp.gmail.com
-    port: 587
-    username: furrymatchapp@gmail.com #Replace this field with your Gmail username.
-    password: ndxcpxqjmjzyfihr #Replace this field with your Gmail password/App password.
-    protocol: smtp
-    tls: true
-    properties.mail.smtp:
-      auth: true
-      starttls.enable: true
-      ssl.trust: smtp.gmail.com
+    base-url: http://my-server-url-to-change # Modify according to your server's URL
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration

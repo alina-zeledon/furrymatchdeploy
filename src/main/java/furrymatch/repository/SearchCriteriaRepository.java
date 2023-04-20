@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 /**
  * Spring Data JPA repository for the SearchCriteria entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface SearchCriteriaRepository extends JpaRepository<SearchCriteria, Long> {
     @Query(value = "SELECT * FROM search_criteria WHERE pet_id = :id", nativeQuery = true)
