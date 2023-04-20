@@ -3,6 +3,8 @@ import { IUser } from 'app/entities/user/user.model';
 
 export interface IOwner {
   user_id: number;
+  id?: number | null;
+  message?: string | null;
   firstName?: string | null;
   secondName?: string | null;
   firstLastName?: string | null;
