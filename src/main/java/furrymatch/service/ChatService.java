@@ -2,6 +2,9 @@ package furrymatch.service;
 
 import furrymatch.domain.Chat;
 import furrymatch.repository.ChatRepository;
+import furrymatch.repository.UserRepository;
+import furrymatch.security.SecurityUtils;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +24,13 @@ public class ChatService {
 
     private final ChatRepository chatRepository;
 
-    public ChatService(ChatRepository chatRepository) {
+    private final UserRepository userRepository;
+
+    private Long selectedPet;
+
+    public ChatService(ChatRepository chatRepository, UserRepository userRepository) {
         this.chatRepository = chatRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -99,12 +107,13 @@ public class ChatService {
     }
 
     /**
-     * Delete the chat by id.
+     * Delete the chats by match_id.
      *
      * @param id the id of the entity.
      */
     public void delete(Long id) {
         log.debug("Request to delete Chat : {}", id);
-        chatRepository.deleteById(id);
+        // chatRepository.deleteById(id);
+        chatRepository.deleteChats(id);
     }
 }

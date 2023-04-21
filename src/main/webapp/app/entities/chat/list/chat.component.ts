@@ -3,20 +3,25 @@ import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 import { combineLatest, filter, Observable, switchMap, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2';
 
 import { IChat } from '../chat.model';
+import { IOwner } from '../../owner/owner.model';
 
 import { ITEMS_PER_PAGE, PAGE_HEADER, TOTAL_COUNT_RESPONSE_HEADER } from 'app/config/pagination.constants';
 import { ASC, DESC, SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigation.constants';
 import { EntityArrayResponseType, ChatService } from '../service/chat.service';
+import { OwnerService } from '../../owner/service/owner.service';
 import { ChatDeleteDialogComponent } from '../delete/chat-delete-dialog.component';
 
 @Component({
   selector: 'jhi-chat',
   templateUrl: './chat.component.html',
+  styleUrls: ['./chat.component.css'],
 })
 export class ChatComponent implements OnInit {
-  chats?: IChat[];
+  chats?: IOwner[];
+  chatArrays?: IOwner[];
   isLoading = false;
 
   predicate = 'id';
@@ -28,6 +33,7 @@ export class ChatComponent implements OnInit {
 
   constructor(
     protected chatService: ChatService,
+    protected ownerService: OwnerService,
     protected activatedRoute: ActivatedRoute,
     public router: Router,
     protected modalService: NgbModal
@@ -36,10 +42,53 @@ export class ChatComponent implements OnInit {
   trackId = (_index: number, item: IChat): number => this.chatService.getChatIdentifier(item);
 
   ngOnInit(): void {
-    this.load();
+    //this.load();
+    this.listChats();
   }
 
-  delete(chat: IChat): void {
+  listChats(): void {
+    this.ownerService.findUserChats().subscribe(result => {
+      if (result.body) {
+        this.chats = result.body.filter((value, index, self) => self.findIndex(v => v.id === value.id) === index);
+        //this.chats = result.body;
+        let array2: IOwner[] = [];
+        const array = [...this.chats];
+        array.forEach((item, index) => {
+          if (item.phoneNumber) {
+            this.chatService.find(item.phoneNumber).subscribe(result => {
+              array2[index] = { ...array[index], message: result.body?.message };
+            });
+          }
+          this.chatArrays = array2;
+        });
+      }
+    });
+  }
+
+  delete(id: any): void {
+    Swal.fire({
+      title: '¿Deseás eliminar la conversación?',
+      text: 'Si hacés click en el botón de Sí perderás toda la información del mismo.',
+      showCancelButton: false,
+      showConfirmButton: true,
+      showDenyButton: true,
+      confirmButtonText: 'Sí',
+      denyButtonText: 'No',
+      icon: 'success',
+      confirmButtonColor: '#3381f6',
+      denyButtonColor: '#3381f6',
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        this.chatService.delete(id).subscribe(result => {
+          this.listChats();
+        });
+      } else if (result.isDenied) {
+        console.log('no');
+      }
+    });
+  }
+
+  /*delete(chat: IChat): void {
     const modalRef = this.modalService.open(ChatDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.chat = chat;
     // unsubscribe not needed because closed completes on modal close
@@ -131,5 +180,5 @@ export class ChatComponent implements OnInit {
     } else {
       return [predicate + ',' + ascendingQueryParam];
     }
-  }
+  }*/
 }
