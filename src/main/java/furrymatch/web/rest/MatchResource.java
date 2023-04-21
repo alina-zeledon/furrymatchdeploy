@@ -1,6 +1,7 @@
 package furrymatch.web.rest;
 
 import furrymatch.domain.Match;
+import furrymatch.domain.User;
 import furrymatch.repository.MatchRepository;
 import furrymatch.service.MatchService;
 import furrymatch.web.rest.errors.BadRequestAlertException;
@@ -26,6 +27,7 @@ import tech.jhipster.web.util.ResponseUtil;
 /**
  * REST controller for managing {@link furrymatch.domain.Match}.
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class MatchResource {
@@ -144,6 +146,16 @@ public class MatchResource {
         Page<Match> page = matchService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/matches/user/current")
+    public ResponseEntity<Long> getCurrentUserPetId() {
+        Optional<Long> petIdOpt = matchService.getCurrentUserPetId();
+        if (petIdOpt.isPresent()) {
+            return ResponseEntity.ok().body(petIdOpt.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     /**
