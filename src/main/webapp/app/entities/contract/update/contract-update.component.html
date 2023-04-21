@@ -1,87 +1,106 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
-    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-contract-heading" data-cy="ContractCreateUpdateHeading" jhiTranslate="furryMatchApp.contract.home.createOrEditLabel">
-        Create or edit a Contract
-      </h2>
+<div class="cnt-princ" xmlns="http://www.w3.org/1999/html">
+  <div class="cnt-sec">
+    <h1 class="title">Mensajes</h1>
+    <div class="secondary-text">¡Chatea con tus amistades humanas para conocer nuevas amistades peludas!</div>
+  </div>
+  <div>
+    <div class="wrapper">
+      <div class="profile-wrapper">
+        <div class="text-profile">Mi contrato con Lili</div>
+        <img
+          src="https://res.cloudinary.com/alocortesu/image/upload/v1681426636/furry_match_user_pics/pa0b05yrvhp8qqwxxudw.png"
+          class="img-profile"
+        />
+      </div>
+      <div class="inputs-wrapper">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+          <div>
+            <div class="row mb-3" *ngIf="editForm.controls.id.value !== null">
+              <label class="form-label" for="field_id">ID</label>
+              <div class="input-wrapper">
+                <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+              </div>
+            </div>
 
-      <div>
-        <jhi-alert-error></jhi-alert-error>
+            <div class="row mb-3">
+              <label class="form-label" for="field_tradeMoney">Sobre negociar dinero:</label>
+              <div class="input-wrapper">
+                <textarea
+                  type="text"
+                  class="form-control"
+                  name="tradeMoney"
+                  id="field_tradeMoney"
+                  data-cy="tradeMoney"
+                  formControlName="tradeMoney"
+                  placeholder="Describa los mutuos acuerdos a los que llegaron sobre dinero de por medio en la negociación. Si desea, puede dejar el espacio en blanco y se definirán los criterios sugeridos por Furry Match."
+                >
+                </textarea>
+              </div>
+            </div>
 
-        <div class="row mb-3" *ngIf="editForm.controls.id.value !== null">
-          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
-          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
-        </div>
+            <div class="row mb-3">
+              <label class="form-label" for="field_tradePups">Sobre negociar las crias:</label>
+              <div class="input-wrapper">
+                <textarea
+                  type="text"
+                  class="form-control"
+                  name="tradePups"
+                  id="field_tradePups"
+                  data-cy="tradePups"
+                  formControlName="tradePups"
+                  placeholder="Describa los mutos acuerdos a los que llegaron sobre la repartición de las crias.
+Si desea, puede dejar el espacio en blanco y se definirán los criterios sugeridos por Furry Match."
+                ></textarea>
+              </div>
+            </div>
 
-        <div class="row mb-3">
-          <label class="form-label" jhiTranslate="furryMatchApp.contract.tradeMoney" for="field_tradeMoney">Trade Money</label>
-          <input
-            type="text"
-            class="form-control"
-            name="tradeMoney"
-            id="field_tradeMoney"
-            data-cy="tradeMoney"
-            formControlName="tradeMoney"
-          />
-        </div>
+            <div class="row mb-3">
+              <label class="form-label" for="field_pedigree">Sobre el pedigrí de las mascotas:</label>
+              <div class="input-wrapper">
+                <textarea
+                  type="text"
+                  class="form-control"
+                  name="pedigree"
+                  id="field_pedigree"
+                  data-cy="pedigree"
+                  formControlName="pedigree"
+                  placeholder="Si las mascotas cuentan con pedigrí, describa todos los detalles en esta sección.
+Si desea, puede dejar el espacio en blanco y se definirán los criterios sugeridos por Furry Match."
+                ></textarea>
+              </div>
+            </div>
 
-        <div class="row mb-3">
-          <label class="form-label" jhiTranslate="furryMatchApp.contract.tradePups" for="field_tradePups">Trade Pups</label>
-          <input type="text" class="form-control" name="tradePups" id="field_tradePups" data-cy="tradePups" formControlName="tradePups" />
-        </div>
+            <div class="row mb-3">
+              <label class="form-label" for="field_otherNotes">Sobre otras condiciones:</label>
+              <div class="input-wrapper">
+                <textarea
+                  type="text"
+                  class="form-control"
+                  name="otherNotes"
+                  id="field_otherNotes"
+                  data-cy="otherNotes"
+                  formControlName="otherNotes"
+                  placeholder="Describa los acuerdos adiciones a los que llegaron.
+Si desea, puede dejar el espacio en blanco y se definirán los criterios sugeridos por Furry Match."
+                >
+                </textarea>
+              </div>
+            </div>
+          </div>
 
-        <div class="row mb-3">
-          <label class="form-label" jhiTranslate="furryMatchApp.contract.pedigree" for="field_pedigree">Pedigree</label>
-          <input type="text" class="form-control" name="pedigree" id="field_pedigree" data-cy="pedigree" formControlName="pedigree" />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" jhiTranslate="furryMatchApp.contract.otherNotes" for="field_otherNotes">Other Notes</label>
-          <input
-            type="text"
-            class="form-control"
-            name="otherNotes"
-            id="field_otherNotes"
-            data-cy="otherNotes"
-            formControlName="otherNotes"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" jhiTranslate="furryMatchApp.contract.contractDate" for="field_contractDate">Contract Date</label>
-          <div class="input-group">
-            <input
-              id="field_contractDate"
-              data-cy="contractDate"
-              type="text"
-              class="form-control"
-              name="contractDate"
-              ngbDatepicker
-              #contractDateDp="ngbDatepicker"
-              formControlName="contractDate"
-            />
-            <button type="button" class="btn btn-secondary" (click)="contractDateDp.toggle()">
-              <fa-icon icon="calendar-alt"></fa-icon>
+          <div class="button-wrapper">
+            <button
+              type="submit"
+              id="save-entity"
+              data-cy="entityCreateSaveButton"
+              [disabled]="editForm.invalid || isSaving"
+              class="btn-blue btn"
+            >
+              Generar
             </button>
           </div>
-        </div>
+        </form>
       </div>
-
-      <div>
-        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
-        </button>
-
-        <button
-          type="submit"
-          id="save-entity"
-          data-cy="entityCreateSaveButton"
-          [disabled]="editForm.invalid || isSaving"
-          class="btn btn-primary"
-        >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
