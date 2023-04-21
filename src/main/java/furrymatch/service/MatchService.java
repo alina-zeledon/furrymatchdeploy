@@ -1,7 +1,10 @@
 package furrymatch.service;
 
 import furrymatch.domain.Match;
+import furrymatch.domain.User;
 import furrymatch.repository.MatchRepository;
+import furrymatch.repository.UserRepository;
+import furrymatch.security.SecurityUtils;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +24,11 @@ public class MatchService {
     private final Logger log = LoggerFactory.getLogger(MatchService.class);
 
     private final MatchRepository matchRepository;
+    private final UserRepository userRepository;
 
-    public MatchService(MatchRepository matchRepository) {
+    public MatchService(MatchRepository matchRepository, UserRepository userRepository) {
         this.matchRepository = matchRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -94,6 +99,11 @@ public class MatchService {
     public Optional<Match> findOne(Long id) {
         log.debug("Request to get Match : {}", id);
         return matchRepository.findById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Long> getCurrentUserPetId() {
+        return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).map(user -> Long.valueOf(user.getImageUrl()));
     }
 
     /**
