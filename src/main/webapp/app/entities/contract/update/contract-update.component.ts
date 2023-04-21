@@ -3,6 +3,7 @@ import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+import dayjs from 'dayjs/esm';
 
 import { ContractFormService, ContractFormGroup } from './contract-form.service';
 import { IContract } from '../contract.model';
@@ -11,6 +12,7 @@ import { ContractService } from '../service/contract.service';
 @Component({
   selector: 'jhi-contract-update',
   templateUrl: './contract-update.component.html',
+  styleUrls: ['./contract-form.component.css'],
 })
 export class ContractUpdateComponent implements OnInit {
   isSaving = false;
@@ -40,6 +42,7 @@ export class ContractUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const contract = this.contractFormService.getContract(this.editForm);
+    contract.contractDate = dayjs();
     if (contract.id !== null) {
       this.subscribeToSaveResponse(this.contractService.update(contract));
     } else {
