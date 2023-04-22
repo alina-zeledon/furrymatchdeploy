@@ -2,6 +2,9 @@ package furrymatch.service;
 
 import furrymatch.domain.Owner;
 import furrymatch.repository.OwnerRepository;
+import furrymatch.repository.UserRepository;
+import furrymatch.security.SecurityUtils;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +24,13 @@ public class OwnerService {
 
     private final OwnerRepository ownerRepository;
 
-    public OwnerService(OwnerRepository ownerRepository) {
+    private final UserRepository userRepository;
+
+    private Long selectedPet;
+
+    public OwnerService(OwnerRepository ownerRepository, UserRepository userRepository) {
         this.ownerRepository = ownerRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -117,6 +125,17 @@ public class OwnerService {
     public Page<Owner> findAll(Pageable pageable) {
         log.debug("Request to get all Owners");
         return ownerRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Owner> findUserChats() {
+        SecurityUtils
+            .getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(user -> {
+                selectedPet = Long.valueOf(user.getImageUrl());
+            });
+        return ownerRepository.findUserPetChats(selectedPet);
     }
 
     /**

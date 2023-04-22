@@ -518,13 +518,13 @@ export class PetUpdateComponent implements OnInit {
           console.log('borrado');
         });
       } else if (result.isDenied) {
-        Swal.fire({
+        /*Swal.fire({
           title: 'Error',
           text: 'No se pudo borrar tu mascota. Por favor intentá nuevamente.',
           icon: 'error',
           confirmButtonColor: '#3381f6',
           confirmButtonText: 'Cerrar',
-        });
+        });*/
       }
     });
   }

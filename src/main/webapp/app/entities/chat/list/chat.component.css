@@ -1,0 +1,82 @@
+.cnt-princ {
+  margin-left: 5%;
+  margin-right: 5%;
+  height: 90vh;
+}
+
+.cnt-sec {
+  border-bottom: 1px solid #e8e6ea;
+  margin-bottom: 22px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.list-wrapper {
+  width: 30%;
+}
+
+.chat-wrapper {
+  width: 70%;
+}
+
+.secondary-text {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  color: rgba(0, 0, 0, 0.7);
+  text-align: left;
+  margin-bottom: 22px;
+}
+
+.title {
+  text-align: left;
+  padding: 0;
+  font-weight: 700;
+  font-size: 34px;
+}
+
+.img-profile {
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 50%;
+}
+
+.list-chat-wrapper {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #e8e6ea;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+.text-name {
+  padding-left: 36px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #000000;
+  width: 50%;
+  text-align: left;
+  margin: auto;
+}
+
+.trash-icon {
+  text-align: right;
+  width: 25%;
+  margin: auto;
+  width: 1.365rem;
+  height: 1.544rem;
+}
+
+.image {
+  width: 25%;
+}
+
+.last-message {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+}

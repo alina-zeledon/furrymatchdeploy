@@ -185,7 +185,6 @@ public class PetResource {
         Long ownerId = userService.getUserWithAuthorities().get().getId();
         log.debug("PET ID: ", petId);
         SearchCriteria searchCriteria = searchCriteriaService.findByPetId(Long.valueOf(petId));
-        log.debug("Search Criteria: ", searchCriteria);
         List<Pet> pets = petService.searchPets(searchCriteria, ownerId);
         return ResponseEntity.ok().body(pets);
     }

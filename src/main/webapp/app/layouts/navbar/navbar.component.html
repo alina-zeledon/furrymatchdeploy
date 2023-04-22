@@ -253,9 +253,15 @@
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
             >
-              <a class="nav-link" [routerLink]="['']" (click)="collapseNavbar()" title="Mis matches">
-                <img src="../content/images/btn_matches_inactive.png" class="btn-icon" />
-              </a>
+              <div
+                class="nav-item"
+                (mouseenter)="isHoveringMatches = true; updateMatchIcon()"
+                (mouseleave)="isHoveringMatches = false; updateMatchIcon()"
+              >
+                <a class="nav-link" [routerLink]="['match']" (click)="collapseNavbar()" title="Mis matches">
+                  <img [src]="currentImgMatch" class="btn-icon" />
+                </a>
+              </div>
             </li>
 
             <!--        Finder menu-->
@@ -267,9 +273,15 @@
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
             >
-              <a class="nav-link" [routerLink]="['pet/search']" (click)="collapseNavbar()" title="Buscar mascotas">
-                <img src="../content/images/btn_find_inactive.png" class="btn-icon" />
-              </a>
+              <div
+                class="nav-item"
+                (mouseenter)="isHoveringFind = true; updateFindIcon()"
+                (mouseleave)="isHoveringFind = false; updateFindIcon()"
+              >
+                <a class="nav-link" [routerLink]="['']" (click)="collapseNavbar()" title="Mis filtros">
+                  <img [src]="currentImgFind" class="btn-icon" />
+                </a>
+              </div>
             </li>
 
             <!--        Chat menu-->
@@ -281,9 +293,15 @@
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
             >
-              <a class="nav-link" [routerLink]="['']" (click)="goToChat()" title="Mis chats">
-                <img src="../content/images/btn_chat_inactive.png" class="btn-icon" />
-              </a>
+              <div
+                class="nav-item"
+                (mouseenter)="isHoveringChat = true; updateChatIcon()"
+                (mouseleave)="isHoveringChat = false; updateChatIcon()"
+              >
+                <a class="nav-link" [routerLink]="['chat']" (click)="collapseNavbar()" title="Mis chats">
+                  <img [src]="currentImgChat" class="btn-icon" />
+                </a>
+              </div>
             </li>
 
             <!--        User menu-->
@@ -294,9 +312,11 @@
                 href="javascript:void(0);"
                 id="account-menu"
                 data-cy="accountMenu"
-                (click)="toggleUserDropdown($event)"
+                (click)="toggleUserDropdown($event); updateUserIcon()"
+                (mouseenter)="currentImgProfile = activeImgProfile"
+                (mouseleave)="updateUserIcon()"
               >
-                <img src="../content/images/btn_profile_inactive.png" class="btn-icon" />
+                <img [src]="currentImgProfile" class="btn-icon btn-icon-user" />
               </a>
               <ul
                 class="custom-dropdown-menu-user"

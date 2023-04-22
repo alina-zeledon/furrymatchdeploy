@@ -67,7 +67,7 @@ export class SearchMatchComponent implements OnInit {
         console.log('PET ID: ' + this.currentPetId);
 
         if (this.currentPetId !== null) {
-          this.searchCriteriaService.find(this.currentPetId).subscribe(
+          this.searchCriteriaService.findByPetId(this.currentPetId).subscribe(
             (res: SearchCriteriaEntityResponseType) => {
               this.filters = res.body;
               console.log('User Search Criteria From DB: ' + JSON.stringify(this.filters, null, 2));

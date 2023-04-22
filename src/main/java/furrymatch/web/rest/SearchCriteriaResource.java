@@ -180,6 +180,13 @@ public class SearchCriteriaResource {
         return ResponseUtil.wrapOrNotFound(searchCriteria);
     }
 
+    @GetMapping("/search-criteria/petId/{id}")
+    public ResponseEntity<SearchCriteria> getSearchCriteriaByPetId(@PathVariable Long id) {
+        log.debug("REST request to get SearchCriteria : {}", id);
+        Optional<SearchCriteria> searchCriteria = Optional.ofNullable(searchCriteriaService.findByPetId(id));
+        return ResponseUtil.wrapOrNotFound(searchCriteria);
+    }
+
     @GetMapping("/search-criteria/user")
     public ResponseEntity<SearchCriteria> getSearchCriteriaUser() {
         Optional<SearchCriteria> searchCriteria = searchCriteriaService.findByOwnerUser();
