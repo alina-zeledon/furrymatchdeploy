@@ -34,6 +34,10 @@ export class LikeeService {
     return this.http.get<ILikee>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
+  isMatch(firstPetId: number, secondPetId: number): Observable<HttpResponse<boolean>> {
+    return this.http.get<boolean>(`${this.resourceUrl}/isMatch/${firstPetId}/${secondPetId}`, { observe: 'response' });
+  }
+
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<ILikee[]>(this.resourceUrl, { params: options, observe: 'response' });

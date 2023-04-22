@@ -1,29 +1,41 @@
 <img class="objective-type" src="../content/images/Group 27.png" />
 <div class="objective-txt">
   <div>Estoy buscando:</div>
-  <div *ngIf="filters?.objective === '1'">Amigos para mi mascota</div>
-  <div *ngIf="filters?.objective === '2'">Otras mascotas para cruzarlas</div>
+  <div *ngIf="filters?.objective === '1'">Otras mascotas para cruzarlas</div>
+  <div *ngIf="filters?.objective === '2'">Amigos para mi mascota</div>
 </div>
 <div class="cnt-princ">
   <div>
     <div>
       <div class="login-wrapper">
-        <div *ngIf="pets.length > 0 && currentPetIndex >= 0 && currentPetIndex < pets.length">
+        <div *ngIf="pets.length > 0 && currentPetIndex < pets.length && !noMorePets; else noMorePetsTemplate">
           <div *ngFor="let photo of pets[currentPetIndex].photos; first as isFirst">
             <div *ngIf="isFirst">
               <img [src]="photo.photoUrl" class="img-objective" />
-              <div class="txt-pet">
-                <div class="objective-text">
+              <div class="txt-pet" [style.background-image]="'url(../content/images/backImgFooter.png)'">
+                <div class="objective-text bg-image">
                   {{ pets[currentPetIndex].name }}
                   <div class="pet-breed">{{ pets[currentPetIndex]?.breed?.breed }}</div>
                 </div>
               </div>
+              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '1'">San Jose</div>
+              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '2'">Alajuela</div>
+              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '3'">Cartago</div>
+              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '4'">Heredia</div>
+              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '5'">Guanacaste</div>
+              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '6'">Puntarenas</div>
+              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '7'">Limón</div>
             </div>
           </div>
         </div>
+        <ng-template #noMorePetsTemplate>
+          <div class="no-more-pets-message">No hay más mascotas que mostrar, vuelve más tarde!</div>
+        </ng-template>
       </div>
-      <img src="../content/images/dislike.png" alt="Skip" class="like-btns" (click)="skipPet()" />
-      <img src="../content/images/like.png" alt="Match" class="like-btns" (click)="match()" />
+      <div *ngIf="pets.length > 0 && currentPetIndex < pets.length && !noMorePets">
+        <img src="../content/images/dislike.png" alt="Skip" class="like-btns" (click)="skipPet()" />
+        <img src="../content/images/like.png" alt="Match" class="like-btns" (click)="like()" />
+      </div>
     </div>
   </div>
 </div>

@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -177,10 +178,13 @@ public class PetResource {
     @GetMapping("/pets/search")
     public ResponseEntity<List<Pet>> searchPets(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get pets based on search criteria");
-        String petId = userService.getUserWithAuthorities().get().getImageUrl();
+        //String petId = userService.getUserWithAuthorities().get().getImageUrl();
+        String petId = String.valueOf(petService.getCurrentUserPetId());
+        System.out.println("******************************************");
+        System.out.println("PET ID FROM searchPets function " + petId);
         Long ownerId = userService.getUserWithAuthorities().get().getId();
         log.debug("PET ID: ", petId);
-        SearchCriteria searchCriteria = searchCriteriaService.findOneAlina(Long.valueOf(petId));
+        SearchCriteria searchCriteria = searchCriteriaService.findByPetId(Long.valueOf(petId));
         log.debug("Search Criteria: ", searchCriteria);
         List<Pet> pets = petService.searchPets(searchCriteria, ownerId);
         return ResponseEntity.ok().body(pets);
@@ -214,6 +218,7 @@ public class PetResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
+
     /*
     @GetMapping("/search")
     public ResponseEntity<List<Pet>> searchPets(
@@ -241,5 +246,14 @@ public class PetResource {
             List<Pet> pets = petService.searchPets(searchCriteria);
             return ResponseEntity.ok().body(pets);
         } */
-
+    @GetMapping("/pets/current")
+    public ResponseEntity<Long> getPetInSession() {
+        Optional<Long> petIdOpt = petService.getPetId();
+        System.out.println("PET ID FROM BACKEND " + petIdOpt);
+        if (petIdOpt.isPresent()) {
+            return ResponseEntity.ok().body(petIdOpt.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
 }

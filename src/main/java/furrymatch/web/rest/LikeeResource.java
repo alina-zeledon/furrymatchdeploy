@@ -163,6 +163,13 @@ public class LikeeResource {
         return ResponseUtil.wrapOrNotFound(likee);
     }
 
+    @GetMapping("/likees/isMatch/{firstPetId}/{secondPetId}")
+    public ResponseEntity<Boolean> isMatch(@PathVariable Long firstPetId, @PathVariable Long secondPetId) {
+        log.debug("REST request to check if both pets liked each other: {}, {}", firstPetId, secondPetId);
+        boolean isMatch = likeeService.checkIfBothPetsLikedEachOther(firstPetId, secondPetId);
+        return ResponseEntity.ok().body(isMatch);
+    }
+
     /**
      * {@code DELETE  /likees/:id} : delete the "id" likee.
      *

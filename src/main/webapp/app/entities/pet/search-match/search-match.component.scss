@@ -31,25 +31,24 @@
 .pet-breed {
   font-weight: normal;
   font-size: 14px;
-  text-align: left;
 }
 .objective-txt {
   position: absolute;
+  top: 171px;
   width: 391px;
   height: 58px;
   left: 160px;
-  top: 19%;
   color: #3381f6;
   font-weight: bold;
 }
-
+.owner-province {
+}
 .txt-pet {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: left;
+  text-align: left !important;
   width: 295px;
   height: 83px;
-  background-color: var(--clr-black);
   color: var(--clr-white);
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
@@ -57,10 +56,11 @@
 
 .objective-text {
   font-family: 'Montserrat';
+  margin: 15px;
   font-style: normal;
   font-weight: 700;
   font-size: 24px;
-  line-height: 150%;
+  line-height: 111%;
 }
 
 .title-txt {
@@ -78,4 +78,8 @@
 .like-btns {
   width: 80px;
   height: 80px;
+}
+
+.no-more-pets-message {
+  margin: 15% 0 20% 0;
 }
