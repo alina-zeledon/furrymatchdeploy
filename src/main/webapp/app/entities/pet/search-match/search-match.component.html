@@ -15,16 +15,18 @@
               <div class="txt-pet" [style.background-image]="'url(../content/images/backImgFooter.png)'">
                 <div class="objective-text bg-image">
                   {{ pets[currentPetIndex].name }}
-                  <div class="pet-breed">{{ pets[currentPetIndex]?.breed?.breed }}</div>
+                  <div class="pet-breed">
+                    {{ pets[currentPetIndex]?.breed?.breed }},
+                    <span *ngIf="pets[currentPetIndex]?.owner?.province === '1'">San Jose</span>
+                    <span *ngIf="pets[currentPetIndex]?.owner?.province === '2'">Alajuela</span>
+                    <span *ngIf="pets[currentPetIndex]?.owner?.province === '3'">Cartago</span>
+                    <span *ngIf="pets[currentPetIndex]?.owner?.province === '4'">Heredia</span>
+                    <span *ngIf="pets[currentPetIndex]?.owner?.province === '5'">Guanacaste</span>
+                    <span *ngIf="pets[currentPetIndex]?.owner?.province === '6'">Puntarenas</span>
+                    <span *ngIf="pets[currentPetIndex]?.owner?.province === '7'">Limón</span>
+                  </div>
                 </div>
               </div>
-              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '1'">San Jose</div>
-              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '2'">Alajuela</div>
-              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '3'">Cartago</div>
-              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '4'">Heredia</div>
-              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '5'">Guanacaste</div>
-              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '6'">Puntarenas</div>
-              <div class="owner-province" *ngIf="pets[currentPetIndex]?.owner?.province === '7'">Limón</div>
             </div>
           </div>
         </div>

@@ -179,6 +179,7 @@ public class PetResource {
     public ResponseEntity<List<Pet>> searchPets(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get pets based on search criteria");
         //String petId = userService.getUserWithAuthorities().get().getImageUrl();
+        //Current Pet In Session
         String petId = String.valueOf(petService.getCurrentUserPetId());
         System.out.println("******************************************");
         System.out.println("PET ID FROM searchPets function " + petId);
@@ -218,33 +219,6 @@ public class PetResource {
             .build();
     }
 
-    /*
-    @GetMapping("/search")
-    public ResponseEntity<List<Pet>> searchPets(
-        @RequestParam(value = "id", required = false) String id,
-        @RequestParam(value = "filterType", required = false, defaultValue = "") String filter,
-        @RequestParam(value = "sex", required = false) Sex sex,
-        @RequestParam(value = "objective", required = false, defaultValue = "") String objective,
-        @RequestParam(value = "provice", required = false, defaultValue = "") String province,
-        @RequestParam(value = "canton", required = false, defaultValue = "") String canton,
-        @RequestParam(value = "district", required = false, defaultValue = "") String district) {
-        {
-
-
-            log.debug("REST request to get a page of Pets based on search criteria");
-
-            SearchCriteria searchCriteria = new SearchCriteria();
-            searchCriteria.setId(Long.valueOf(id));
-            searchCriteria.setFilterType(filter);
-            searchCriteria.setSex(sex);
-            searchCriteria.setObjective(objective);
-            searchCriteria.setProvice(province);
-            searchCriteria.setCanton(canton);
-            searchCriteria.setDistrict(district);
-
-            List<Pet> pets = petService.searchPets(searchCriteria);
-            return ResponseEntity.ok().body(pets);
-        } */
     @GetMapping("/pets/current")
     public ResponseEntity<Long> getPetInSession() {
         Optional<Long> petIdOpt = petService.getPetId();

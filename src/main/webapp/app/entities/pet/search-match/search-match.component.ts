@@ -51,8 +51,10 @@ export class SearchMatchComponent implements OnInit {
     this.petService.search().subscribe(
       (res: PetEntityArrayResponseType) => {
         this.pets = res.body || [];
+        console.log('All Pets ', JSON.stringify(this.pets, null, 2));
         this.currentPetIndex = 0;
-        this.loadSearchCriteriaForCurrentUser();
+        this.findPetInSession();
+        //this.loadSearchCriteriaForCurrentUser();
       },
       error => {
         console.error('Error fetching pets based on search criteria:', error);
@@ -60,6 +62,30 @@ export class SearchMatchComponent implements OnInit {
     );
   }
 
+  findPetInSession(): void {
+    this.petService.getPetInSession().subscribe(response => {
+      this.currentPetId = response.body;
+      //console.log('PET ID: ' + this.currentPetId);
+      if (this.currentPetId == null) {
+        console.error('The currentPetId is null');
+      } else {
+        //Need to pull search criteria to display owner's objective
+        this.searchCriteriaService.findByPetId(this.currentPetId).subscribe(
+          (res: SearchCriteriaEntityResponseType) => {
+            this.filters = res.body;
+            console.log('User Search Criteria From DB: ' + JSON.stringify(this.filters, null, 2));
+            console.log('Pet Displayed', JSON.stringify(this.pets[this.currentPetIndex], null, 2));
+            // Calls the search function with the searchCriteria object
+            //this.loadPets(searchCriteria);
+          },
+          error => {
+            console.error('Error fetching search criteria for user:', error);
+          }
+        );
+      }
+    });
+  }
+  /*
   loadSearchCriteriaForCurrentUser(): void {
     this.accountService.identity().subscribe(user => {
       this.petService.getPetInSession().subscribe(response => {
@@ -85,7 +111,7 @@ export class SearchMatchComponent implements OnInit {
       });
     });
   }
-
+*/
   /*
   loadSearchCriteriaForCurrentUser(): void {
     this.accountService.identity().subscribe(user => {
@@ -136,7 +162,30 @@ export class SearchMatchComponent implements OnInit {
       }
     );
   }
+  like(): void {
+    const like: NewLikee = {
+      id: null,
+      likeState: LikeType.Like,
+      firstPet: { id: this.currentPetId as number }, // Create an object with only the id property
+      secondPet: { id: this.pets[this.currentPetIndex].id },
+    };
+    console.log('First PET ID' + this.currentPetId);
+    console.log('Second PET ID' + this.pets[this.currentPetIndex].id);
+    this.likeService.saveLikeIsMatch(like).subscribe(response => {
+      if (response.body) {
+        console.log('Match ID:', response.body);
+        const matchId = response.body;
+        console.log('Match found!');
+        this.router.navigate([`/match/${matchId}/view`]);
+      } else {
+        console.log('No match found.');
+      }
+      this.newCurrentPetIndex = this.currentPetIndex + 1;
+      this.moveToNextPet();
+    });
+  }
 
+  /*
   like(): void {
     const like: NewLikee = {
       id: null,
@@ -152,7 +201,8 @@ export class SearchMatchComponent implements OnInit {
           console.log('Match found!');
           console.log('First PET ID' + this.currentPetId);
           console.log('Second PET ID' + this.pets[this.currentPetIndex].id);
-          const newMatch: NewMatch = {
+          //  this.router.navigate(['/match/id/view']);
+          /*const newMatch: NewMatch = {
             id: null,
             notifyMatch: true,
             dateMatch: dayjs(),
@@ -161,7 +211,7 @@ export class SearchMatchComponent implements OnInit {
             secondLiked: { id: this.currentPetId as number },
           };
           console.log('Match object ' + JSON.stringify(newMatch, null, 2));
-          /* this.matchService.create(newMatch).subscribe(() => {
+            this.matchService.create(newMatch).subscribe(() => {
             Swal.fire({
               title: 'Success',
               text: 'Es un match!',
@@ -169,7 +219,7 @@ export class SearchMatchComponent implements OnInit {
               confirmButtonColor: '#3381f6',
               confirmButtonText: 'Cerrar',
             });
-          }); */
+          });
         } else {
           console.log('No match found.');
         }
@@ -177,5 +227,5 @@ export class SearchMatchComponent implements OnInit {
         this.moveToNextPet();
       });
     });
-  }
+  }*/
 }

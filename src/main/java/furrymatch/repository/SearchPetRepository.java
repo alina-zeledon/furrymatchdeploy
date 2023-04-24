@@ -86,7 +86,7 @@ public class SearchPetRepository {
         Subquery<Long> likedPetsSubquery = criteriaQueryPet.subquery(Long.class);
         Root<Likee> likeRoot = likedPetsSubquery.from(Likee.class);
         likedPetsSubquery.select(likeRoot.get("secondPet").get("id"));
-        likedPetsSubquery.where(criteriaBuilder.equal(likeRoot.get("firstPet").get("id"), filters.getId()));
+        likedPetsSubquery.where(criteriaBuilder.equal(likeRoot.get("firstPet").get("id"), filters.getPet().getId()));
 
         Predicate notLikedByUserPetPredicate = petRoot.get("id").in(likedPetsSubquery).not();
         predicates.add(notLikedByUserPetPredicate);

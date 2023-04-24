@@ -22,6 +22,9 @@ export class LikeeService {
     return this.http.post<ILikee>(this.resourceUrl, likee, { observe: 'response' });
   }
 
+  saveLikeIsMatch(likee: NewLikee): Observable<HttpResponse<Number>> {
+    return this.http.post<Number>(this.resourceUrl + '/match', likee, { observe: 'response' });
+  }
   update(likee: ILikee): Observable<EntityResponseType> {
     return this.http.put<ILikee>(`${this.resourceUrl}/${this.getLikeeIdentifier(likee)}`, likee, { observe: 'response' });
   }

@@ -62,6 +62,7 @@ public class LikeeResource {
             throw new BadRequestAlertException("A new likee cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Likee result = likeeService.save(likee);
+        //likeeService.isMatch(likee);
         return ResponseEntity
             .created(new URI("/api/likees/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -184,5 +185,19 @@ public class LikeeResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PostMapping("/likees/match")
+    public ResponseEntity<Long> createLikeMatch(@Valid @RequestBody Likee likee) throws URISyntaxException {
+        log.debug("REST request to save Likee : {}", likee);
+        if (likee.getId() != null) {
+            throw new BadRequestAlertException("A new likee cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        Likee result = likeeService.save(likee);
+        Long matchId = likeeService.checkIfMatch(likee);
+        return ResponseEntity
+            .created(new URI("/api/likee/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(matchId);
     }
 }

@@ -43,9 +43,22 @@ public class LikeeService {
         return likeeRepository.save(likee);
     }
 
-    public Likee saveAndCheckForMatch(Likee likee) {
-        log.debug("Request to save Likee : {}", likee);
-        likeeRepository.save(likee);
+    public void isMatch(Likee likee) {
+        boolean isMatch = checkIfBothPetsLikedEachOther(likee.getSecondPet().getId(), likee.getFirstPet().getId());
+        if (isMatch) {
+            //log.debug("Match is being saved in the backend!");
+            Match newMatch = new Match();
+            newMatch.setNotifyMatch(true);
+            newMatch.setDateMatch(LocalDate.now());
+            newMatch.setFirstLiked(likee);
+            newMatch.setSecondLiked(
+                likeeRepository.findByFirstPetIdAndSecondPetId(likee.getSecondPet().getId(), likee.getFirstPet().getId()).orElse(null)
+            );
+            matchService.save(newMatch);
+        }
+    }
+
+    public Long checkIfMatch(Likee likee) {
         boolean isMatch = checkIfBothPetsLikedEachOther(likee.getSecondPet().getId(), likee.getFirstPet().getId());
         if (isMatch) {
             log.debug("Match is being saved in the backend!");
@@ -56,9 +69,10 @@ public class LikeeService {
             newMatch.setSecondLiked(
                 likeeRepository.findByFirstPetIdAndSecondPetId(likee.getSecondPet().getId(), likee.getFirstPet().getId()).orElse(null)
             );
-            matchService.save(newMatch);
+            Match savedMatch = matchService.save(newMatch);
+            return savedMatch.getId();
         }
-        return likeeRepository.save(likee);
+        return null;
     }
 
     /**

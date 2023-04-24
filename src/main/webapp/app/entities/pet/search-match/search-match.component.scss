@@ -1,7 +1,7 @@
 .login-wrapper {
   display: flex;
   justify-content: space-around;
-  margin: 10% 10% 3% 10%;
+  margin: 10% 10% 1.5% 10%;
 }
 .objective-type {
   position: absolute;
@@ -20,7 +20,7 @@
 }
 .img-objective {
   width: 295px;
-  height: 450px;
+  height: 400px;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
   object-fit: cover;
@@ -40,8 +40,6 @@
   left: 160px;
   color: #3381f6;
   font-weight: bold;
-}
-.owner-province {
 }
 .txt-pet {
   display: flex;
@@ -76,8 +74,9 @@
 }
 
 .like-btns {
-  width: 80px;
-  height: 80px;
+  width: 99px;
+  height: 99px;
+  margin: 0 8px 10px 8px;
 }
 
 .no-more-pets-message {
