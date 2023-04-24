@@ -1,5 +1,7 @@
 package furrymatch.service;
 
+import furrymatch.domain.Contract;
+import furrymatch.domain.Owner;
 import furrymatch.domain.User;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -28,6 +30,10 @@ public class MailService {
     private final Logger log = LoggerFactory.getLogger(MailService.class);
 
     private static final String USER = "user";
+
+    private static final String USER2 = "user2";
+
+    private static final String CONTRACT = "contract";
 
     private static final String BASE_URL = "baseUrl";
 
@@ -108,5 +114,29 @@ public class MailService {
     public void sendPasswordResetMail(User user) {
         log.debug("Sending password reset email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title");
+    }
+
+    @Async
+    public void sendEmailContractFromTemplate(
+        Owner user,
+        Owner user2,
+        Contract contract,
+        String email,
+        String templateName,
+        String titleKey
+    ) {
+        Locale locale = Locale.forLanguageTag("en");
+        Context context = new Context(locale);
+        context.setVariable(USER, user);
+        context.setVariable(USER2, user2);
+        context.setVariable(CONTRACT, contract);
+        String content = templateEngine.process(templateName, context);
+        String subject = titleKey;
+        sendEmail(email, subject, content, false, true);
+    }
+
+    @Async
+    public void sendContractMail(Owner user, Owner user2, Contract contract, String email) {
+        sendEmailContractFromTemplate(user, user2, contract, email, "mail/contractEmail", "Contrato creado de FurryMatch");
     }
 }

@@ -8,6 +8,8 @@ import dayjs from 'dayjs/esm';
 import { ContractFormService, ContractFormGroup } from './contract-form.service';
 import { IContract } from '../contract.model';
 import { ContractService } from '../service/contract.service';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'jhi-contract-update',
@@ -23,7 +25,8 @@ export class ContractUpdateComponent implements OnInit {
   constructor(
     protected contractService: ContractService,
     protected contractFormService: ContractFormService,
-    protected activatedRoute: ActivatedRoute
+    protected activatedRoute: ActivatedRoute,
+    protected router: Router
   ) {}
 
   ngOnInit(): void {
@@ -58,7 +61,15 @@ export class ContractUpdateComponent implements OnInit {
   }
 
   protected onSaveSuccess(): void {
-    this.previousState();
+    Swal.fire({
+      title: '¡Contrato generado satisfactoriamente!',
+      text: 'Revisa el contrato que ha sido enviado a tu correo electrónico.Te recomendamos imprimirlo, firmarlo y adjuntar las fotocopias de las cédulas de identidad de ambas partes.',
+      icon: 'success',
+      confirmButtonColor: '#3381f6',
+      confirmButtonText: 'Cerrar',
+    }).then((result: any) => {
+      this.router.navigate(['/contract']);
+    });
   }
 
   protected onSaveError(): void {

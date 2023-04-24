@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="es" lang="es">
+  <head>
+    <title>CONTRATO DE ACUERDOS PARA CRUCE</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body>
+    <p>CONTRATO DE ACUERDOS PARA CRUCE</p>
+    <p>
+      Yo, <span th:text="${user.firstName}" /> <span th:text="${user.firstLastName}" /> <span th:text="${user.secondLastName}" />, mayor de
+      edad, portador de la cédula de identidad número <span th:text="${user.identityNumber}" />, actuando en mi propio nombre y
+      representación y a quien en el curso del presente contrato se le denominará indistintamente como EL PRIMER DUEÑO; y por la otra parte
+      comparece, <span th:text="${user2.firstName}" /> <span th:text="${user2.firstLastName}" /> <span th:text="${user2.secondLastName}" />,
+      mayor de edad, portador de la cédula de identidad número <span th:text="${user2.identityNumber}"></span>, actuando en mi propio nombre
+      y representación y a quien en el curso del presente contrato se le denominará indistintamente como EL SEGUNDO DUEÑO. Nosotros los
+      suscribientes manifestamos ser de los datos de identificación personal antes mencionados, hallarnos en el libre ejercicio de nuestros
+      derechos civiles y de que por el presente acto otorgamos CREACIÓN DE CONTRATO DE ACUERDOS PARA CRUCE, de conformidad con las
+      siguientes cláusulas:
+    </p>
+    <p>
+      PRIMERA: Se llegaron a los siguientes acuerdos sobre el dinero de por medio en la negociación:
+      <span th:if="${contract.tradeMoney}" th:text="${contract.tradeMoney}" /><span th:unless="${contract.tradeMoney}"
+        >No se tomaron acuerdos al respecto.</span
+      >
+    </p>
+    <p>
+      SEGUNDA: Se llegaron a los siguientes acuerdos sobre la repartición de las crías:
+      <span th:if="${contract.tradePups}" th:text="${contract.tradePups}" /><span th:unless="${contract.tradePups}"
+        >No se tomaron acuerdos al respecto.</span
+      >
+    </p>
+    <p>
+      TERCERA: En la siguiente sección se detallará todos los detalles en cuanto al pedigrí de las mascotas:
+      <span th:if="${contract.pedigree}" th:text="${contract.pedigree}" /><span th:unless="${contract.pedigree}"
+        >No se definió al respecto.</span
+      >
+    </p>
+    <p>
+      CUARTA: Se llegaron a los siguientes acuerdos sobre otros temas no incluidos en los anteriores:
+      <span th:if="${contract.otherNotes}" th:text="${contract.otherNotes}" /><span th:unless="${contract.otherNotes}"
+        >No existen más puntos a tomar en cuenta.</span
+      >
+    </p>
+    <p>
+      QUINTA: Los comparecientes manifestamos nuestra conformidad con cada una de las cláusulas del presente documento, el cual es otorgado
+      en dos ejemplares, una copia para cada una de las partes; validez y efectos legales, lo ratificamos, aceptamos y firmamos en prueba de
+      veracidad.
+    </p>
+    <p>_____________________________</p>
+    <p><span th:text="${user.firstName}" /> <span th:text="${user.firstLastName}" /> <span th:text="${user.secondLastName}" />,</p>
+    <p>______________________________</p>
+    <p><span th:text="${user2.firstName}" /> <span th:text="${user2.firstLastName}" /> <span th:text="${user2.secondLastName}" />,</p>
+  </body>
+</html>
