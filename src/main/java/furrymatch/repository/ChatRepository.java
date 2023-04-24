@@ -15,4 +15,7 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
     @Modifying
     @Query(value = "DELETE FROM chat WHERE match_id = :id", nativeQuery = true)
     void deleteChats(@Param("id") Long id);
+
+    @Query("SELECT c FROM Chat c WHERE c.stateChat = :state1 OR c.stateChat = :state2")
+    List<Chat> findByStateChat(@Param("state1") String state1, @Param("state2") String state2);
 }

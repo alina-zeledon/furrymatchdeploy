@@ -26,6 +26,7 @@ import { PageRibbonComponent } from './layouts/profiles/page-ribbon.component';
 import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
 import { ErrorComponent } from './layouts/error/error.component';
 import { CloudinaryModule } from '@cloudinary/ng';
+import { ChatModule } from './entities/chat/chat.module';
 
 @NgModule({
   imports: [
@@ -40,6 +41,7 @@ import { CloudinaryModule } from '@cloudinary/ng';
     NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-', caseSensitive: true }),
     TranslationModule,
     CloudinaryModule,
+    ChatModule,
   ],
   providers: [
     Title,

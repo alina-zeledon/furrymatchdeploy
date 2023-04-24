@@ -142,7 +142,7 @@ export class NavbarComponent implements OnInit {
 
   isFindRouteActive(): boolean {
     const currentUrl = this.router.url;
-    return currentUrl.includes('');
+    return currentUrl.includes('pet/search');
   }
 
   updateFindIcon() {

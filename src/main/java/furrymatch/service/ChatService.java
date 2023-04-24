@@ -106,6 +106,10 @@ public class ChatService {
         return chatRepository.findById(id);
     }
 
+    public List<Chat> findByStateChat(String state1, String state2) {
+        return chatRepository.findByStateChat(state1, state2);
+    }
+
     /**
      * Delete the chats by match_id.
      *

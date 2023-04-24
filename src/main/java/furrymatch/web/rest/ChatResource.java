@@ -6,6 +6,7 @@ import furrymatch.service.ChatService;
 import furrymatch.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,6 +59,7 @@ public class ChatResource {
         if (chat.getId() != null) {
             throw new BadRequestAlertException("A new chat cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        chat.setDateChat(LocalDateTime.now());
         Chat result = chatService.save(chat);
         return ResponseEntity
             .created(new URI("/api/chats/" + result.getId()))
@@ -143,6 +145,13 @@ public class ChatResource {
         Page<Chat> page = chatService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/chats/state")
+    public ResponseEntity<List<Chat>> getChatsByStateChat(@RequestParam String state1, @RequestParam String state2) {
+        log.debug("REST request to get Chats by state_chat: {} or {}", state1, state2);
+        List<Chat> chats = chatService.findByStateChat(state1, state2);
+        return ResponseEntity.ok().body(chats);
     }
 
     /**
