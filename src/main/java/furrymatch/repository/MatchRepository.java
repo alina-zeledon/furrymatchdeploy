@@ -1,6 +1,8 @@
 package furrymatch.repository;
 
+import furrymatch.domain.Likee;
 import furrymatch.domain.Match;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 

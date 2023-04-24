@@ -138,7 +138,7 @@ public class SearchCriteriaService {
     }
 
     @Transactional(readOnly = true)
-    public SearchCriteria findOneAlina(Long id) {
+    public SearchCriteria findByPetId(Long id) {
         log.debug("Request to get SearchCriteria : {}", id);
         return searchCriteriaRepository.findByPetId(id);
     }

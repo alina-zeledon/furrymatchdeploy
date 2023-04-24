@@ -205,13 +205,11 @@ public class PetService {
     }
 
     public List<Pet> searchPets(SearchCriteria searchCriteria, Long ownerId) {
-        log.debug("Request to get all Pets based on search criteria");
+        // log.debug("Request to get all Pets based on search criteria");
         List<Pet> pets = searchPetRepository.searchPets(searchCriteria, ownerId);
 
-        // Print the list of pets returned by searchPetRepository.searchPets()
-        System.out.println("Pets returned by searchPetRepository.searchPets():");
+        // System.out.println("Pets returned by searchPetRepository.searchPets():");
         pets.forEach(System.out::println);
-
         ArrayList<Pet> newPets = new ArrayList<>();
         pets.forEach(pet -> {
             Set<Photo> petPhotos = pet.getPhotos();
@@ -222,7 +220,7 @@ public class PetService {
             petPhotos.addAll(photosByPetID);
             pet.setPhotos(petPhotos);
             newPets.add(pet);
-            System.out.println("List of pets" + pet);
+            // System.out.println("List of pets" + pet);
         });
         return newPets;
     }
@@ -247,5 +245,19 @@ public class PetService {
     public void delete(Long id) {
         log.debug("Request to delete Pet : {}", id);
         petRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Long getCurrentUserPetId() {
+        return SecurityUtils
+            .getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .map(user -> Long.valueOf(user.getImageUrl()))
+            .orElseThrow(() -> new IllegalStateException("User pet ID not found"));
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Long> getPetId() {
+        return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).map(user -> Long.valueOf(user.getImageUrl()));
     }
 }
