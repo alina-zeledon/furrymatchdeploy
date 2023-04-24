@@ -6,7 +6,7 @@
   <div>
     <div class="wrapper">
       <div class="list-wrapper">
-        <div *ngFor="let chat of chatArrays">
+        <div *ngFor="let chat of chatArrays" (click)="onRecipientClick(chat)">
           <div class="list-chat-wrapper">
             <div class="image">
               <img src="{{ chat.photo }}" class="img-profile" />
@@ -17,13 +17,22 @@
                 {{ chat.message?.substring(0, 20) }}
               </div>
             </div>
-            <div class="trash-icon" (click)="delete(chat.identityNumber)">
+            <div class="trash-icon" (click)="delete(chat.identityNumber); $event.stopPropagation()">
               <img src="../content/images/delete_icon.png" />
             </div>
           </div>
         </div>
       </div>
-      <div class="chat-wrapper"></div>
+      <div class="chat-wrapper">
+        <div class="chat-window-container">
+          <jhi-chat-window
+            *ngIf="selectedRecipient"
+            [recipient]="selectedRecipient"
+            [identityNumber]="selectedMatchId"
+            (close)="onChatWindowClose()"
+          ></jhi-chat-window>
+        </div>
+      </div>
     </div>
   </div>
 </div>

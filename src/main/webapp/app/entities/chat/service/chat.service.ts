@@ -50,6 +50,10 @@ export class ChatService {
       .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
+  getChatsByStateChat(state1: string, state2: string): Observable<HttpResponse<IChat[]>> {
+    return this.http.get<IChat[]>(`${this.resourceUrl}/state?state1=${state1}&state2=${state2}`, { observe: 'response' });
+  }
+
   find(id: number): Observable<EntityResponseType> {
     return this.http
       .get<RestChat>(`${this.resourceUrl}/${id}`, { observe: 'response' })

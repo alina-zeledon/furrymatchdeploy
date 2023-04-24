@@ -1,7 +1,7 @@
 .cnt-princ {
   margin-left: 5%;
   margin-right: 5%;
-  height: 90vh;
+  height: 70vh;
 }
 
 .cnt-sec {
@@ -17,10 +17,21 @@
 
 .list-wrapper {
   width: 30%;
+  cursor: pointer;
 }
 
 .chat-wrapper {
   width: 70%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-window-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  position: relative;
 }
 
 .secondary-text {

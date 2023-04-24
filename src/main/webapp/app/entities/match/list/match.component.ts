@@ -127,7 +127,7 @@ export class MatchComponent implements OnInit, AfterContentInit {
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
     this.matches = dataFromBody;
 
-    // Obtén los ids únicos de los pets involucrados en los matches
+    // Unique idLikees
 
     this.matches.forEach(match => {
       if (match.firstLiked?.id) {
@@ -200,7 +200,6 @@ export class MatchComponent implements OnInit, AfterContentInit {
         }
       });
 
-      // Aquí puedes usar petData para mostrar los nombres y fotos de las mascotas en el front-end
       console.log('Pet Data:', this.petData);
     });
   }

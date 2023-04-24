@@ -3,6 +3,7 @@ package furrymatch.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -24,7 +25,7 @@ public class Chat implements Serializable {
     private Long id;
 
     @Column(name = "date_chat")
-    private LocalDate dateChat;
+    private LocalDateTime dateChat;
 
     @Column(name = "message")
     private String message;
@@ -51,16 +52,16 @@ public class Chat implements Serializable {
         this.id = id;
     }
 
-    public LocalDate getDateChat() {
+    public LocalDateTime getDateChat() {
         return this.dateChat;
     }
 
-    public Chat dateChat(LocalDate dateChat) {
+    public Chat dateChat(LocalDateTime dateChat) {
         this.setDateChat(dateChat);
         return this;
     }
 
-    public void setDateChat(LocalDate dateChat) {
+    public void setDateChat(LocalDateTime dateChat) {
         this.dateChat = dateChat;
     }
 

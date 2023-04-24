@@ -8,16 +8,11 @@ import { Authority } from 'app/config/authority.constants';
 import { PasswordResetInitComponent } from './account/password-reset/init/password-reset-init.component';
 import { PasswordResetFinishComponent } from './account/password-reset/finish/password-reset-finish.component';
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
-import { LandingPageComponent } from './landing/landing-page/landing-page.component';
 
 @NgModule({
   imports: [
     RouterModule.forRoot(
       [
-        {
-          path: 'home',
-          component: LandingPageComponent,
-        },
         {
           path: 'admin',
           data: {
