@@ -19,10 +19,9 @@ export class ChatWindowComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   newMessage = '';
   currentUser: Account | null = null;
-
   messages: IChat[] = [];
-
   match: any;
+  isSendingMessage: boolean = false;
 
   constructor(private chatService: ChatService, private accountService: AccountService) {
     this.accountService.identity().subscribe((account: Account | null) => {
@@ -57,6 +56,7 @@ export class ChatWindowComponent implements OnInit {
     event.preventDefault();
     if (this.newMessage.trim()) {
       if (this.currentUser && this.recipient && this.currentUser.id && this.recipient.id && this.identityNumber) {
+        this.isSendingMessage = true;
         const senderStateChat1 = `${this.currentUser.id};${this.recipient.id};unread`;
         const senderStateChat2 = `${this.currentUser.id};${this.recipient.id};read`;
         const receiverStateChat1 = `${this.recipient.id};${this.currentUser.id};unread`;
@@ -71,6 +71,7 @@ export class ChatWindowComponent implements OnInit {
         this.chatService.create(message).subscribe(() => {
           this.newMessage = '';
           this.getMessages(senderStateChat1, senderStateChat2, receiverStateChat1, receiverStateChat2);
+          this.isSendingMessage = false;
         });
       } else {
         Swal.fire({
