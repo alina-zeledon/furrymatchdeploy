@@ -29,6 +29,7 @@
             *ngIf="selectedRecipient"
             [recipient]="selectedRecipient"
             [identityNumber]="selectedMatchId"
+            (changeMessage)="changeMessage($event)"
             (close)="onChatWindowClose()"
           ></jhi-chat-window>
         </div>
