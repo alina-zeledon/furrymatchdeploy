@@ -3,9 +3,11 @@ package furrymatch.web.rest;
 import furrymatch.domain.Chat;
 import furrymatch.repository.ChatRepository;
 import furrymatch.service.ChatService;
+import furrymatch.service.UserService;
 import furrymatch.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -41,9 +42,12 @@ public class ChatResource {
 
     private final ChatRepository chatRepository;
 
-    public ChatResource(ChatService chatService, ChatRepository chatRepository) {
+    private final UserService userService;
+
+    public ChatResource(ChatService chatService, ChatRepository chatRepository, UserService userService) {
         this.chatService = chatService;
         this.chatRepository = chatRepository;
+        this.userService = userService;
     }
 
     /**
@@ -59,6 +63,7 @@ public class ChatResource {
         if (chat.getId() != null) {
             throw new BadRequestAlertException("A new chat cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        chat.setDateChat(LocalDateTime.now());
         Chat result = chatService.save(chat);
         return ResponseEntity
             .created(new URI("/api/chats/" + result.getId()))
@@ -146,6 +151,13 @@ public class ChatResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    @GetMapping("/chats/state")
+    public ResponseEntity<List<Chat>> getChatsByStateChat(@RequestParam String state1, @RequestParam String state2) {
+        log.debug("REST request to get Chats by state_chat: {} or {}", state1, state2);
+        List<Chat> chats = chatService.findByStateChat(state1, state2);
+        return ResponseEntity.ok().body(chats);
+    }
+
     /**
      * {@code GET  /chats/:id} : get the "id" chat.
      *
@@ -160,7 +172,7 @@ public class ChatResource {
     }
 
     /**
-     * {@code DELETE  /chats/:id} : delete the "id" chat.
+     * {@code DELETE  /chats/:id} : delete the "match_id" chats.
      *
      * @param id the id of the chat to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
@@ -173,5 +185,18 @@ public class ChatResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/chats/unread")
+    public ResponseEntity<List<Chat>> getUnreadChatsForCurrentUser() {
+        Long currentOwnerId = userService.getUserWithAuthorities().get().getId();
+        List<Chat> unreadChats = chatService.findUnreadChatsByOwnerId(currentOwnerId);
+        return ResponseEntity.ok().body(unreadChats);
+    }
+
+    @PutMapping("/chats/update-state/{matchId}/{senderId}")
+    public ResponseEntity<Void> updateChatState(@PathVariable Long matchId, @PathVariable Long senderId) {
+        chatService.updateChatState(matchId, senderId);
+        return ResponseEntity.ok().build();
     }
 }

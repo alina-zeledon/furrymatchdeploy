@@ -87,27 +87,7 @@ export class PetService {
     return this.http.get<IPet[]>(searchUrl, { observe: 'response' });
   }
 
-  /*
-search(searchCriteria: ISearchCriteria | null): Observable<HttpResponse<IPet[]>> {
-const searchUrl = `${this.resourceUrl}/search`;
-const options = createRequestOption(searchCriteria);
-console.log(options)
-console.log(searchCriteria)
-return this.http.get<IPet[]>(searchUrl, { params: options, observe: 'response' });
-}
-
-search(searchCriteria: ISearchCriteria | null): Observable<HttpResponse<IPet[]>> {
-  const searchUrl = `${this.resourceUrl}/custom-search`;
-  const searchCriteriaJson = JSON.stringify(searchCriteria);
-  console.log(searchCriteriaJson)
-  console.log(searchUrl)
-  return this.http.post<IPet[]>(searchUrl, searchCriteria, { observe: 'response' });
-}
-
-  search(searchCriteria: ISearchCriteria | null): Observable<HttpResponse<IPet[]>> {
-    const searchUrl = `${this.resourceUrl}/search`;
-    const searchCriteriaJson = JSON.stringify(searchCriteria);
-    // Pass the serialized searchCriteriaJson as a request parameter
-    return this.http.get<IPet[]>(searchUrl, { params: { searchCriteria: searchCriteriaJson }, observe: 'response' });
-  }*/
+  getPetInSession(): Observable<HttpResponse<number>> {
+    return this.http.get<number>(`${this.resourceUrl}/current`, { observe: 'response' });
+  }
 }

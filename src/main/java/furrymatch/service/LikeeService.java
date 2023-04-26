@@ -1,7 +1,9 @@
 package furrymatch.service;
 
 import furrymatch.domain.Likee;
+import furrymatch.domain.Match;
 import furrymatch.repository.LikeeRepository;
+import java.time.LocalDate;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +23,13 @@ public class LikeeService {
 
     private final LikeeRepository likeeRepository;
 
-    public LikeeService(LikeeRepository likeeRepository) {
+    private final UserService userService;
+    private final MatchService matchService;
+
+    public LikeeService(LikeeRepository likeeRepository, UserService userService, MatchService matchService) {
         this.likeeRepository = likeeRepository;
+        this.userService = userService;
+        this.matchService = matchService;
     }
 
     /**
@@ -34,6 +41,38 @@ public class LikeeService {
     public Likee save(Likee likee) {
         log.debug("Request to save Likee : {}", likee);
         return likeeRepository.save(likee);
+    }
+
+    public void isMatch(Likee likee) {
+        boolean isMatch = checkIfBothPetsLikedEachOther(likee.getSecondPet().getId(), likee.getFirstPet().getId());
+        if (isMatch) {
+            //log.debug("Match is being saved in the backend!");
+            Match newMatch = new Match();
+            newMatch.setNotifyMatch(true);
+            newMatch.setDateMatch(LocalDate.now());
+            newMatch.setFirstLiked(likee);
+            newMatch.setSecondLiked(
+                likeeRepository.findByFirstPetIdAndSecondPetId(likee.getSecondPet().getId(), likee.getFirstPet().getId()).orElse(null)
+            );
+            matchService.save(newMatch);
+        }
+    }
+
+    public Long checkIfMatch(Likee likee) {
+        boolean isMatch = checkIfBothPetsLikedEachOther(likee.getSecondPet().getId(), likee.getFirstPet().getId());
+        if (isMatch) {
+            log.debug("Match is being saved in the backend!");
+            Match newMatch = new Match();
+            newMatch.setNotifyMatch(true);
+            newMatch.setDateMatch(LocalDate.now());
+            newMatch.setFirstLiked(likee);
+            newMatch.setSecondLiked(
+                likeeRepository.findByFirstPetIdAndSecondPetId(likee.getSecondPet().getId(), likee.getFirstPet().getId()).orElse(null)
+            );
+            Match savedMatch = matchService.save(newMatch);
+            return savedMatch.getId();
+        }
+        return null;
     }
 
     /**
@@ -100,5 +139,11 @@ public class LikeeService {
     public void delete(Long id) {
         log.debug("Request to delete Likee : {}", id);
         likeeRepository.deleteById(id);
+    }
+
+    public boolean checkIfBothPetsLikedEachOther(Long firstPetId, Long secondPetId) {
+        Optional<Likee> likee1 = likeeRepository.findByFirstPetIdAndSecondPetId(firstPetId, secondPetId);
+        Optional<Likee> likee2 = likeeRepository.findByFirstPetIdAndSecondPetId(secondPetId, firstPetId);
+        return likee1.isPresent() && likee2.isPresent();
     }
 }

@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
   providers: [RegisterService],
 })
 export class RegisterComponent implements AfterViewInit {
+  accepted = false;
   @ViewChild('login', { static: false })
   login?: ElementRef;
 
@@ -112,6 +113,10 @@ export class RegisterComponent implements AfterViewInit {
       const provincesArray = Object.entries(response).map(([id, name]) => ({ id, name }));
       this.provinces = provincesArray;
     });
+  }
+
+  onTermsAccepted(): void {
+    this.accepted = true;
   }
 
   selected = '';

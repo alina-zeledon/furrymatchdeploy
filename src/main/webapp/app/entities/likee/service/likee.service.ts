@@ -22,6 +22,9 @@ export class LikeeService {
     return this.http.post<ILikee>(this.resourceUrl, likee, { observe: 'response' });
   }
 
+  saveLikeIsMatch(likee: NewLikee): Observable<HttpResponse<Number>> {
+    return this.http.post<Number>(this.resourceUrl + '/match', likee, { observe: 'response' });
+  }
   update(likee: ILikee): Observable<EntityResponseType> {
     return this.http.put<ILikee>(`${this.resourceUrl}/${this.getLikeeIdentifier(likee)}`, likee, { observe: 'response' });
   }
@@ -32,6 +35,10 @@ export class LikeeService {
 
   find(id: number): Observable<EntityResponseType> {
     return this.http.get<ILikee>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  isMatch(firstPetId: number, secondPetId: number): Observable<HttpResponse<boolean>> {
+    return this.http.get<boolean>(`${this.resourceUrl}/isMatch/${firstPetId}/${secondPetId}`, { observe: 'response' });
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {

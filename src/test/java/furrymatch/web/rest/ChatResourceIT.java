@@ -10,6 +10,7 @@ import furrymatch.IntegrationTest;
 import furrymatch.domain.Chat;
 import furrymatch.repository.ChatRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Random;
@@ -65,7 +66,7 @@ class ChatResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Chat createEntity(EntityManager em) {
-        Chat chat = new Chat().dateChat(DEFAULT_DATE_CHAT).message(DEFAULT_MESSAGE).stateChat(DEFAULT_STATE_CHAT);
+        Chat chat = new Chat().dateChat(LocalDateTime.from(DEFAULT_DATE_CHAT)).message(DEFAULT_MESSAGE).stateChat(DEFAULT_STATE_CHAT);
         return chat;
     }
 
@@ -76,7 +77,7 @@ class ChatResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Chat createUpdatedEntity(EntityManager em) {
-        Chat chat = new Chat().dateChat(UPDATED_DATE_CHAT).message(UPDATED_MESSAGE).stateChat(UPDATED_STATE_CHAT);
+        Chat chat = new Chat().dateChat(LocalDateTime.from(UPDATED_DATE_CHAT)).message(UPDATED_MESSAGE).stateChat(UPDATED_STATE_CHAT);
         return chat;
     }
 
@@ -178,7 +179,7 @@ class ChatResourceIT {
         Chat updatedChat = chatRepository.findById(chat.getId()).get();
         // Disconnect from session so that the updates on updatedChat are not directly saved in db
         em.detach(updatedChat);
-        updatedChat.dateChat(UPDATED_DATE_CHAT).message(UPDATED_MESSAGE).stateChat(UPDATED_STATE_CHAT);
+        updatedChat.dateChat(LocalDateTime.from(UPDATED_DATE_CHAT)).message(UPDATED_MESSAGE).stateChat(UPDATED_STATE_CHAT);
 
         restChatMockMvc
             .perform(
@@ -270,7 +271,7 @@ class ChatResourceIT {
         Chat partialUpdatedChat = new Chat();
         partialUpdatedChat.setId(chat.getId());
 
-        partialUpdatedChat.dateChat(UPDATED_DATE_CHAT).stateChat(UPDATED_STATE_CHAT);
+        partialUpdatedChat.dateChat(LocalDateTime.from(UPDATED_DATE_CHAT)).stateChat(UPDATED_STATE_CHAT);
 
         restChatMockMvc
             .perform(
@@ -302,7 +303,7 @@ class ChatResourceIT {
         Chat partialUpdatedChat = new Chat();
         partialUpdatedChat.setId(chat.getId());
 
-        partialUpdatedChat.dateChat(UPDATED_DATE_CHAT).message(UPDATED_MESSAGE).stateChat(UPDATED_STATE_CHAT);
+        partialUpdatedChat.dateChat(LocalDateTime.from(UPDATED_DATE_CHAT)).message(UPDATED_MESSAGE).stateChat(UPDATED_STATE_CHAT);
 
         restChatMockMvc
             .perform(

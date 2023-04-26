@@ -59,9 +59,9 @@
 
             <div class="cnt-inputs">
               <label class="form-label">Raza</label>
-              <select class="form-control" id="breed" formControlName="breed" data-cy="breed">
-                <option [ngValue]="null"></option>
-                <option *ngFor="let breed of filteredBreedsSharedCollection" [ngValue]="breed.id">{{ breed.breed }}</option>
+              <select class="form-control" id="breed" formControlName="breed" data-cy="breed" name="breed">
+                <option value="null"></option>
+                <option *ngFor="let breed of filteredBreedsSharedCollection" [value]="breed.id">{{ breed.breed }}</option>
               </select>
             </div>
 

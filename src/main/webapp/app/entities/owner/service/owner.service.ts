@@ -123,4 +123,7 @@ export class OwnerService {
       body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
     });
   }
+  findUserChats(): Observable<HttpResponse<IOwner[]>> {
+    return this.http.get<IOwner[]>(`${this.resourceUrl}/user`, { observe: 'response' });
+  }
 }

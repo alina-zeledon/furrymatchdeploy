@@ -1,8 +1,11 @@
 package furrymatch.web.rest;
 
 import furrymatch.domain.Contract;
+import furrymatch.domain.Match;
+import furrymatch.domain.Owner;
+import furrymatch.domain.User;
 import furrymatch.repository.ContractRepository;
-import furrymatch.service.ContractService;
+import furrymatch.service.*;
 import furrymatch.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,9 +45,28 @@ public class ContractResource {
 
     private final ContractRepository contractRepository;
 
-    public ContractResource(ContractService contractService, ContractRepository contractRepository) {
+    private final MatchService matchService;
+
+    private final MailService mailService;
+
+    private final OwnerService ownerService;
+
+    private final UserService userService;
+
+    public ContractResource(
+        ContractService contractService,
+        ContractRepository contractRepository,
+        MatchService matchService,
+        MailService mailService,
+        OwnerService ownerService,
+        UserService userService
+    ) {
         this.contractService = contractService;
         this.contractRepository = contractRepository;
+        this.matchService = matchService;
+        this.mailService = mailService;
+        this.ownerService = ownerService;
+        this.userService = userService;
     }
 
     /**
@@ -61,6 +83,13 @@ public class ContractResource {
             throw new BadRequestAlertException("A new contract cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Contract result = contractService.save(contract);
+        Match match = matchService.findOne(Long.valueOf(12)).get();
+        match.setContract(result);
+        matchService.update(match);
+        User user = userService.getUserWithAuthorities().get();
+        Owner owner1 = ownerService.findOne(user.getId()).get();
+        Owner owner2 = ownerService.findOne(Long.valueOf(4)).get();
+        mailService.sendContractMail(owner1, owner2, contract, user.getEmail());
         return ResponseEntity
             .created(new URI("/api/contracts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))

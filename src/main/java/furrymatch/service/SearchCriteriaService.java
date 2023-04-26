@@ -132,8 +132,14 @@ public class SearchCriteriaService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public SearchCriteria findOne(Long id) {
-        log.debug("Request to get SearchCriteria by pet ID : {}", id);
+    public Optional<SearchCriteria> findOne(Long id) {
+        log.debug("Request to get SearchCriteria : {}", id);
+        return searchCriteriaRepository.findById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public SearchCriteria findByPetId(Long id) {
+        log.debug("Request to get SearchCriteria : {}", id);
         return searchCriteriaRepository.findByPetId(id);
     }
 

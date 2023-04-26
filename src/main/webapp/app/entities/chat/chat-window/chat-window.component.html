@@ -1,0 +1,28 @@
+<div class="chat-window">
+  <div class="chat-header">
+    <div class="recipient-info">
+      <img [src]="recipient?.photo" alt="Foto de perfil" class="recipient-photo" />
+      <div class="recipient-name">{{ recipient?.firstName }} {{ recipient?.firstLastName }}</div>
+    </div>
+    <div class="cnt-btn-quit">
+      <div class="gallery-close" (click)="onCloseClick()">
+        <img src="../content/images/btn_quit.png" />
+      </div>
+    </div>
+  </div>
+  <div class="cnt-msj">
+    <ng-container *ngFor="let message of messages">
+      <div [ngClass]="message?.stateChat?.startsWith(currentUser?.id + ';') ? 'message sent' : 'message received'">
+        <div class="message-content">{{ message.message }}</div>
+      </div>
+    </ng-container>
+  </div>
+  <form class="send-message-form" (submit)="onSendMessage($event)">
+    <input class="inp-txt form-control" type="text" [(ngModel)]="newMessage" name="newMessage" placeholder="Escribe tu mensaje..." />
+    <button class="cnt-btn-quit" type="submit" [disabled]="isSendingMessage">
+      <div class="gallery-close btn-send">
+        <img src="../content/images/btn_send.png" />
+      </div>
+    </button>
+  </form>
+</div>
