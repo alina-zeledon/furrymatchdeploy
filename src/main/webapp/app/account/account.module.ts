@@ -12,6 +12,7 @@ import { PasswordResetFinishComponent } from './password-reset/finish/password-r
 import { SettingsComponent } from './settings/settings.component';
 import { accountState } from './account.route';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { TermsConditionsComponent } from '../terms-conditions/terms-conditions.component';
 
 @NgModule({
   imports: [SharedModule, RouterModule.forChild(accountState), NgxDropzoneModule],
@@ -24,6 +25,8 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     PasswordResetFinishComponent,
     SessionsComponent,
     SettingsComponent,
+    TermsConditionsComponent,
   ],
+  exports: [TermsConditionsComponent],
 })
 export class AccountModule {}
