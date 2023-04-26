@@ -11,7 +11,6 @@
     </div>
   </div>
   <div class="cnt-msj">
-    <!-- Mensajes -->
     <ng-container *ngFor="let message of messages">
       <div [ngClass]="message?.stateChat?.startsWith(currentUser?.id + ';') ? 'message sent' : 'message received'">
         <div class="message-content">{{ message.message }}</div>
@@ -20,7 +19,7 @@
   </div>
   <form class="send-message-form" (submit)="onSendMessage($event)">
     <input class="inp-txt form-control" type="text" [(ngModel)]="newMessage" name="newMessage" placeholder="Escribe tu mensaje..." />
-    <button class="cnt-btn-quit" type="submit">
+    <button class="cnt-btn-quit" type="submit" [disabled]="isSendingMessage">
       <div class="gallery-close btn-send">
         <img src="../content/images/btn_send.png" />
       </div>

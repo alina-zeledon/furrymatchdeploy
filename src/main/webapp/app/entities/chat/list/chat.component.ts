@@ -27,6 +27,8 @@ export class ChatComponent implements OnInit {
 
   selectedRecipient: IOwner | null = null;
   selectedMatchId: number | null = null;
+  selectedIndex: number | null | undefined = null;
+  selectedMessage: string | null = null;
 
   predicate = 'id';
   ascending = true;
@@ -64,8 +66,7 @@ export class ChatComponent implements OnInit {
         array.forEach((item, index) => {
           if (item.phoneNumber) {
             this.chatService.find(item.phoneNumber).subscribe(result => {
-              array2[index] = { ...array[index], message: result.body?.message };
-              console.log(JSON.stringify(result, null, 2));
+              array2[index] = { ...array[index], message: result.body?.message, index: index };
             });
           }
           this.chatArrays = array2;
@@ -106,7 +107,11 @@ export class ChatComponent implements OnInit {
   }
 
   onRecipientClick(recipient: IOwner): void {
+    console.log('index');
+    console.log(recipient.index);
     this.selectedRecipient = recipient;
+    this.selectedIndex = recipient.index;
+    // this.selectedMessage = recipient.message;
     this.selectedMatchId = parseInt(recipient.identityNumber || '', 10) || null; // Convierte el identityNumber a un número
     console.log('Selected Match ID:', this.selectedMatchId);
     console.log('Recipient ID:', this.selectedRecipient.id);
@@ -219,4 +224,16 @@ export class ChatComponent implements OnInit {
   //   }
   // }
   protected readonly parseInt = parseInt;
+
+  changeMessage(message: string): void {
+    if (message) {
+      if (this.chatArrays) {
+        if (this.selectedIndex != null) {
+          console.log('fillComponentAttributeFromRoute');
+          this.chatArrays[this.selectedIndex] = { ...this.chatArrays[this.selectedIndex], message: message };
+          console.log(this.chatArrays);
+        }
+      }
+    }
+  }
 }

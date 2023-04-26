@@ -1,246 +1,262 @@
-<div class="cnt-princ">
-  <h1 class="title">Mi perfil</h1>
-  <div>
-    <div class="profile-pic">
-      <div class="profile-pic-div">
-        <ngx-dropzone (change)="onSelect($event)">
-          <ngx-dropzone-label>Arrastrá o seleccioná<br />una foto</ngx-dropzone-label>
-          <ngx-dropzone-image-preview
-            class="dropzoneImg"
-            ngProjectAs="ngx-dropzone-preview"
-            *ngFor="let f of files"
-            [file]="f"
-            [removable]="true"
-            (removed)="onRemove(f)"
-          >
-            <ngx-dropzone-label>({{ f.type }})</ngx-dropzone-label>
-          </ngx-dropzone-image-preview>
-        </ngx-dropzone>
+<jhi-terms-conditions *ngIf="!accepted" (termsAccepted)="onTermsAccepted()"></jhi-terms-conditions>
+<div *ngIf="accepted">
+  <div class="cnt-princ">
+    <h1 class="title">Mi perfil</h1>
+    <div>
+      <div class="profile-pic">
+        <div class="profile-pic-div">
+          <ngx-dropzone (change)="onSelect($event)">
+            <ngx-dropzone-label>Arrastrá o seleccioná<br />una foto</ngx-dropzone-label>
+            <ngx-dropzone-image-preview
+              class="dropzoneImg"
+              ngProjectAs="ngx-dropzone-preview"
+              *ngFor="let f of files"
+              [file]="f"
+              [removable]="true"
+              (removed)="onRemove(f)"
+            >
+              <ngx-dropzone-label>({{ f.type }})</ngx-dropzone-label>
+            </ngx-dropzone-image-preview>
+          </ngx-dropzone>
+        </div>
+        <button (click)="onUpload()" class="btn btn-blue">Subir</button>
       </div>
-      <button (click)="onUpload()" class="btn btn-blue">Subir</button>
-    </div>
-    <form name="form" role="form" (ngSubmit)="register()" [formGroup]="registerForm" *ngIf="!success">
-      <div class="login-wrapper">
-        <div class="wrapper-sec">
-          <div class="cnt-inputs">
-            <div class="cnt-pass">
-              <div class="cnt-txt">
-                <label class="lbl-txt">Nombre de usuario</label>
-                <input type="text" class="form-control inp-txt" id="login" name="login" formControlName="login" data-cy="username" #login />
-                <div *ngIf="registerForm.get('login')!.invalid && (registerForm.get('login')!.dirty || registerForm.get('login')!.touched)">
-                  <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('login')?.errors?.required">
-                    Tu nombre de usuario es requerido
-                  </small>
-
-                  <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('login')?.errors?.minlength">
-                    Tu nombre de usuario requiere al menos 1 caracter
-                  </small>
-
-                  <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('login')?.errors?.maxlength">
-                    Tu nombre de usuario no puede tener más de 50 caracteres
-                  </small>
-
-                  <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('login')?.errors?.pattern">
-                    Tu nombre de usuario es inválido
-                  </small>
-                </div>
-              </div>
-
-              <div class="cnt-txt">
-                <label>Correo electrónico</label>
-                <input type="email" class="form-control inp-txt" id="email" name="email" formControlName="email" data-cy="email" />
-                <div *ngIf="registerForm.get('email')!.invalid && (registerForm.get('email')!.dirty || registerForm.get('email')!.touched)">
-                  <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('email')?.errors?.required">
-                    Tu correo electrónico es requerido
-                  </small>
-
-                  <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('email')?.errors?.pattern">
-                    Tu correo electrónico es inválido
-                  </small>
-                </div>
-              </div>
-              <div class="cnt-txt">
-                <label>Contraseña</label>
-                <input
-                  type="password"
-                  class="form-control inp-txt"
-                  id="password"
-                  name="password"
-                  formControlName="password"
-                  data-cy="firstPassword"
-                />
-                <div
-                  *ngIf="
-                    registerForm.get('password')!.invalid && (registerForm.get('password')!.dirty || registerForm.get('password')!.touched)
-                  "
-                >
-                  <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('password')?.errors?.required">
-                    Tu contraseña es requerida.
-                  </small>
-
-                  <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('password')?.errors?.pattern">
-                    Debe de ser de al menos 8 caracteres y tener 1 mayúscula, 1 minúscula, 1 número y 1 caracter especial
-                  </small>
-                </div>
-              </div>
-              <div class="cnt-txt">
-                <label> Confirmar contraseña</label>
-                <input
-                  type="password"
-                  class="form-control inp-txt"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  formControlName="confirmPassword"
-                  data-cy="secondPassword"
-                />
-
-                <div
-                  *ngIf="
-                    registerForm.get('confirmPassword')!.invalid &&
-                    (registerForm.get('confirmPassword')!.dirty || registerForm.get('confirmPassword')!.touched)
-                  "
-                >
-                  <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('confirmPassword')?.errors?.required">
-                    Tu confirmación de contraseña es requerida
-                  </small>
-
-                  <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('confirmPassword')?.errors?.pattern">
-                    Debe de ser de al menos 8 caracteres y tener 1 mayúscula, 1 minúscula, 1 número y 1 caracter especial
-                  </small>
-                </div>
-              </div>
-            </div>
-            <!--            <jhi-password-strength-bar-->
-            <!--              [passwordToCheck]="registerForm.get('password')!.value">-->
-            <!--            </jhi-password-strength-bar>-->
-            <div class="grey-block">
-              <div class="cnt-row1">
-                <div class="cnt-inputs">
-                  <label class="lbl-txt">Nombre</label>
+      <form name="form" role="form" (ngSubmit)="register()" [formGroup]="registerForm" *ngIf="!success">
+        <div class="login-wrapper">
+          <div class="wrapper-sec">
+            <div class="cnt-inputs">
+              <div class="cnt-pass">
+                <div class="cnt-txt">
+                  <label class="lbl-txt">Nombre de usuario</label>
                   <input
                     type="text"
                     class="form-control inp-txt"
-                    id="firstName"
-                    name="firstName"
-                    formControlName="firstName"
-                    data-cy="firstName"
+                    id="login"
+                    name="login"
+                    formControlName="login"
+                    data-cy="username"
+                    #login
                   />
+                  <div
+                    *ngIf="registerForm.get('login')!.invalid && (registerForm.get('login')!.dirty || registerForm.get('login')!.touched)"
+                  >
+                    <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('login')?.errors?.required">
+                      Tu nombre de usuario es requerido
+                    </small>
+
+                    <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('login')?.errors?.minlength">
+                      Tu nombre de usuario requiere al menos 1 caracter
+                    </small>
+
+                    <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('login')?.errors?.maxlength">
+                      Tu nombre de usuario no puede tener más de 50 caracteres
+                    </small>
+
+                    <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('login')?.errors?.pattern">
+                      Tu nombre de usuario es inválido
+                    </small>
+                  </div>
                 </div>
 
-                <div class="cnt-inputs">
-                  <label class="lbl-txt">Segundo nombre</label>
-                  <input
-                    type="text"
-                    class="form-control inp-txt"
-                    name="secondName"
-                    id="field_secondName"
-                    data-cy="secondName"
-                    formControlName="secondName"
-                  />
-                </div>
+                <div class="cnt-txt">
+                  <label>Correo electrónico</label>
+                  <input type="email" class="form-control inp-txt" id="email" name="email" formControlName="email" data-cy="email" />
+                  <div
+                    *ngIf="registerForm.get('email')!.invalid && (registerForm.get('email')!.dirty || registerForm.get('email')!.touched)"
+                  >
+                    <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('email')?.errors?.required">
+                      Tu correo electrónico es requerido
+                    </small>
 
-                <div class="cnt-inputs">
-                  <label class="lbl-txt">Primer apellido</label>
-                  <input
-                    type="text"
-                    class="form-control inp-txt"
-                    name="firstLastName"
-                    id="field_firstLastName"
-                    data-cy="firstLastName"
-                    formControlName="firstLastName"
-                  />
+                    <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('email')?.errors?.pattern">
+                      Tu correo electrónico es inválido
+                    </small>
+                  </div>
                 </div>
-
-                <div class="cnt-inputs">
-                  <label class="lbl-txt">Segundo apellido</label>
+                <div class="cnt-txt">
+                  <label>Contraseña</label>
                   <input
-                    type="text"
+                    type="password"
                     class="form-control inp-txt"
-                    name="secondLastName"
-                    id="field_secondLastName"
-                    data-cy="secondLastName"
-                    formControlName="secondLastName"
+                    id="password"
+                    name="password"
+                    formControlName="password"
+                    data-cy="firstPassword"
                   />
+                  <div
+                    *ngIf="
+                      registerForm.get('password')!.invalid &&
+                      (registerForm.get('password')!.dirty || registerForm.get('password')!.touched)
+                    "
+                  >
+                    <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('password')?.errors?.required">
+                      Tu contraseña es requerida.
+                    </small>
+
+                    <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('password')?.errors?.pattern">
+                      Debe de ser de al menos 8 caracteres y tener 1 mayúscula, 1 minúscula, 1 número y 1 caracter especial
+                    </small>
+                  </div>
+                </div>
+                <div class="cnt-txt">
+                  <label> Confirmar contraseña</label>
+                  <input
+                    type="password"
+                    class="form-control inp-txt"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    formControlName="confirmPassword"
+                    data-cy="secondPassword"
+                  />
+
+                  <div
+                    *ngIf="
+                      registerForm.get('confirmPassword')!.invalid &&
+                      (registerForm.get('confirmPassword')!.dirty || registerForm.get('confirmPassword')!.touched)
+                    "
+                  >
+                    <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('confirmPassword')?.errors?.required">
+                      Tu confirmación de contraseña es requerida
+                    </small>
+
+                    <small class="form-text text-danger alert-txt" *ngIf="registerForm.get('confirmPassword')?.errors?.pattern">
+                      Debe de ser de al menos 8 caracteres y tener 1 mayúscula, 1 minúscula, 1 número y 1 caracter especial
+                    </small>
+                  </div>
                 </div>
               </div>
-              <div class="cnt-row2">
-                <div class="cnt-inputs">
-                  <label class="lbl-txt">Número de identificación</label>
-                  <input
-                    type="text"
-                    class="form-control inp-txt"
-                    name="identityNumber"
-                    id="field_identityNumber"
-                    data-cy="identityNumber"
-                    formControlName="identityNumber"
-                  />
-                </div>
+              <!--            <jhi-password-strength-bar-->
+              <!--              [passwordToCheck]="registerForm.get('password')!.value">-->
+              <!--            </jhi-password-strength-bar>-->
+              <div class="grey-block">
+                <div class="cnt-row1">
+                  <div class="cnt-inputs">
+                    <label class="lbl-txt">Nombre</label>
+                    <input
+                      type="text"
+                      class="form-control inp-txt"
+                      id="firstName"
+                      name="firstName"
+                      formControlName="firstName"
+                      data-cy="firstName"
+                    />
+                  </div>
 
-                <div class="cnt-inputs">
-                  <label class="lbl-txt">Número de teléfono</label>
-                  <input
-                    type="number"
-                    class="form-control inp-txt"
-                    name="phoneNumber"
-                    id="field_phoneNumber"
-                    data-cy="phoneNumber"
-                    formControlName="phoneNumber"
-                  />
-                </div>
+                  <div class="cnt-inputs">
+                    <label class="lbl-txt">Segundo nombre</label>
+                    <input
+                      type="text"
+                      class="form-control inp-txt"
+                      name="secondName"
+                      id="field_secondName"
+                      data-cy="secondName"
+                      formControlName="secondName"
+                    />
+                  </div>
 
-                <div class="cnt-inputs">
-                  <label class="lbl-txt">Dirección</label>
-                  <input
-                    type="text"
-                    class="form-control inp-txt"
-                    name="address"
-                    id="field_address"
-                    data-cy="address"
-                    formControlName="address"
-                  />
+                  <div class="cnt-inputs">
+                    <label class="lbl-txt">Primer apellido</label>
+                    <input
+                      type="text"
+                      class="form-control inp-txt"
+                      name="firstLastName"
+                      id="field_firstLastName"
+                      data-cy="firstLastName"
+                      formControlName="firstLastName"
+                    />
+                  </div>
+
+                  <div class="cnt-inputs">
+                    <label class="lbl-txt">Segundo apellido</label>
+                    <input
+                      type="text"
+                      class="form-control inp-txt"
+                      name="secondLastName"
+                      id="field_secondLastName"
+                      data-cy="secondLastName"
+                      formControlName="secondLastName"
+                    />
+                  </div>
+                </div>
+                <div class="cnt-row2">
+                  <div class="cnt-inputs">
+                    <label class="lbl-txt">Número de identificación</label>
+                    <input
+                      type="text"
+                      class="form-control inp-txt"
+                      name="identityNumber"
+                      id="field_identityNumber"
+                      data-cy="identityNumber"
+                      formControlName="identityNumber"
+                    />
+                  </div>
+
+                  <div class="cnt-inputs">
+                    <label class="lbl-txt">Número de teléfono</label>
+                    <input
+                      type="number"
+                      class="form-control inp-txt"
+                      name="phoneNumber"
+                      id="field_phoneNumber"
+                      data-cy="phoneNumber"
+                      formControlName="phoneNumber"
+                    />
+                  </div>
+
+                  <div class="cnt-inputs">
+                    <label class="lbl-txt">Dirección</label>
+                    <input
+                      type="text"
+                      class="form-control inp-txt"
+                      name="address"
+                      id="field_address"
+                      data-cy="address"
+                      formControlName="address"
+                    />
+                  </div>
+                </div>
+                <div class="cnt-row3">
+                  <div class="cnt-inputs">
+                    <label class="lbl-txt">Elegí una provincia</label>
+                    <select class="form-control" id="province" name="province" formControlName="province" (change)="updateProvince($event)">
+                      <option value="">Provincia</option>
+                      <option *ngFor="let province of provinces" [value]="province.id">{{ province.name }}</option>
+                    </select>
+                  </div>
+
+                  <div class="cnt-inputs">
+                    <label class="lbl-txt">Elegí un cantón</label>
+                    <select select class="form-control" id="canton" name="canton" formControlName="canton" (change)="updateCanton($event)">
+                      <option value="">Cantón</option>
+                      <option *ngFor="let canton of cantones" [value]="canton.id">{{ canton.name }}</option>
+                    </select>
+                  </div>
+
+                  <div class="cnt-inputs">
+                    <label class="lbl-txt">Elegí un distrito</label>
+                    <select class="form-control" id="district" name="district" formControlName="district">
+                      <option value="">Distrito</option>
+                      <option *ngFor="let district of districts" [value]="district.id">{{ district.name }}</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-              <div class="cnt-row3">
-                <div class="cnt-inputs">
-                  <label class="lbl-txt">Elegí una provincia</label>
-                  <select class="form-control" id="province" name="province" formControlName="province" (change)="updateProvince($event)">
-                    <option value="">Provincia</option>
-                    <option *ngFor="let province of provinces" [value]="province.id">{{ province.name }}</option>
-                  </select>
+              <div>
+                <div class="cnt-txt-btn">
+                  <button type="submit" [disabled]="registerForm.invalid" class="btn btn-blue" data-cy="submit">Register</button>
+                  <small *ngIf="registerForm.invalid" class="form-text text-danger alert-txt">
+                    Por favor, completa todos los campos obligatorios antes de continuar.
+                  </small>
                 </div>
-
-                <div class="cnt-inputs">
-                  <label class="lbl-txt">Elegí un cantón</label>
-                  <select select class="form-control" id="canton" name="canton" formControlName="canton" (change)="updateCanton($event)">
-                    <option value="">Cantón</option>
-                    <option *ngFor="let canton of cantones" [value]="canton.id">{{ canton.name }}</option>
-                  </select>
+                <div class="cnt-ingresa">
+                  <p class="text-cuenta">¿Ya tenés una cuenta?</p>
+                  <a routerLink="/login" class="text-link">Ingresá aquí</a>
                 </div>
-
-                <div class="cnt-inputs">
-                  <label class="lbl-txt">Elegí un distrito</label>
-                  <select class="form-control" id="district" name="district" formControlName="district">
-                    <option value="">Distrito</option>
-                    <option *ngFor="let district of districts" [value]="district.id">{{ district.name }}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="cnt-txt-btn">
-                <button type="submit" [disabled]="registerForm.invalid" class="btn btn-blue" data-cy="submit">Register</button>
-                <small *ngIf="registerForm.invalid" class="form-text text-danger alert-txt">
-                  Por favor, completa todos los campos obligatorios antes de continuar.
-                </small>
-              </div>
-              <div class="cnt-ingresa">
-                <p class="text-cuenta">¿Ya tenés una cuenta?</p>
-                <a routerLink="/login" class="text-link">Ingresá aquí</a>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>
