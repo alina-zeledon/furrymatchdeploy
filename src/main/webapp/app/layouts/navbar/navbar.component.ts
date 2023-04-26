@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { SessionStorageService } from 'ngx-webstorage';
-import { HttpResponse } from '@angular/common/http';
 
 import { VERSION } from 'app/app.constants';
 import { LANGUAGES } from 'app/config/language.constants';
@@ -11,6 +10,10 @@ import { AccountService } from 'app/core/auth/account.service';
 import { LoginService } from 'app/login/login.service';
 import { ProfileService } from 'app/layouts/profiles/profile.service';
 import { EntityNavbarItems } from 'app/entities/entity-navbar-items';
+import { filter } from 'rxjs/operators';
+
+const petsListRoute = /^\/pet$/;
+const searchCriteriaNewRoute = /^\/search-criteria\/new(\/.*)?$/;
 
 @Component({
   selector: 'jhi-navbar',
@@ -45,8 +48,15 @@ export class NavbarComponent implements OnInit {
   currentImgMatch = this.inactiveImgMatch;
   isHoveringMatches = false;
 
+  activeImgContract = '../content/images/btn_contract_active.png';
+  inactiveImgContract = '../content/images/btn_contract_inactive.png';
+  currentImgContract = this.inactiveImgContract;
+  isHoveringContract = false;
+
   userMenuIsOpen = false;
   adminMenuIsOpen = false;
+
+  showIcons = true;
 
   constructor(
     private loginService: LoginService,
@@ -63,6 +73,7 @@ export class NavbarComponent implements OnInit {
     this.updateMatchIcon();
     this.updateChatIcon();
     this.updateFindIcon();
+    this.updateContractIcon();
   }
 
   ngOnInit(): void {
@@ -99,11 +110,17 @@ export class NavbarComponent implements OnInit {
         this.updateFindIcon();
       }
     });
+
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.updateContractIcon();
+      }
+    });
   }
 
   isUserRouteActive(): boolean {
     const currentUrl = this.router.url;
-    return currentUrl.includes('/pet');
+    return currentUrl.includes('pet');
   }
 
   updateUserIcon() {
@@ -150,6 +167,19 @@ export class NavbarComponent implements OnInit {
       this.currentImgFind = this.activeImgFind;
     } else {
       this.currentImgFind = this.inactiveImgFind;
+    }
+  }
+
+  isContractRouteActive(): boolean {
+    const currentUrl = this.router.url;
+    return currentUrl.includes('contract');
+  }
+
+  updateContractIcon() {
+    if (this.isContractRouteActive() || this.isHoveringContract) {
+      this.currentImgContract = this.activeImgContract;
+    } else {
+      this.currentImgContract = this.inactiveImgContract;
     }
   }
 
@@ -202,5 +232,18 @@ export class NavbarComponent implements OnInit {
 
   goToChat(): void {
     this.router.navigate(['/chat']);
+  }
+
+  get shouldShowIcons(): boolean {
+    return !this.isPetsListRouteActive();
+  }
+
+  isPetsListRouteActive(): boolean {
+    const currentUrl = this.router.url;
+    const isPetListRoute = petsListRoute.test(currentUrl);
+    const isNewSearchCriteriaRoute = searchCriteriaNewRoute.test(currentUrl);
+
+    // Devuelve true si está en la página de lista de mascotas o en la página para crear nuevos criterios de búsqueda
+    return isPetListRoute || isNewSearchCriteriaRoute;
   }
 }
