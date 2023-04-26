@@ -32,9 +32,9 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://furrymatchtestap.mysql.database.azure.com:3306/furrymatch?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: furrymatch
-    password: Cenfotec1234
+    url: jdbc:mysql://localhost:3306/furrymatch?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: root
+    password: Lolito01
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -93,7 +93,7 @@ jhipster:
       # security key (this key should be unique for your application, and kept secret)
       key: 7b4bc4aaec3f15078a41595e3bc28ceee157e64f4ad2594f0d708afdebbab15744a8cdff5d249c69c7a5e980f30681ce0842
   mail: # specific JHipster mail property, for standard properties see MailProperties
-    base-url: http://127.0.0.1:8080
+    base-url: https://furrymatch.azurewebsites.net
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration

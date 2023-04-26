@@ -9,7 +9,11 @@
         <div *ngFor="let chat of chatArrays" (click)="onRecipientClick(chat)">
           <div class="list-chat-wrapper">
             <div class="image">
-              <img src="{{ chat.photo }}" class="img-profile" />
+              <img
+                src="{{ chat.photo }}"
+                class="img-profile"
+                [ngClass]="{ 'img-profile-border': unreadMatchIds.includes(parseInt(chat.identityNumber || '', 10)) }"
+              />
             </div>
             <div class="text-name">
               {{ chat.firstName }} {{ chat.firstLastName }}

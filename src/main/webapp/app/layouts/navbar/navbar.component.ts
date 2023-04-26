@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { SessionStorageService } from 'ngx-webstorage';
-
+import { HttpResponse } from '@angular/common/http';
+import { interval, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { OnDestroy } from '@angular/core';
 import { VERSION } from 'app/app.constants';
 import { LANGUAGES } from 'app/config/language.constants';
 import { Account } from 'app/core/auth/account.model';
@@ -14,13 +17,15 @@ import { filter } from 'rxjs/operators';
 
 const petsListRoute = /^\/pet$/;
 const searchCriteriaNewRoute = /^\/search-criteria\/new(\/.*)?$/;
+import { ChatService } from '../../entities/chat/service/chat.service';
+import { IChat } from '../../entities/chat/chat.model';
 
 @Component({
   selector: 'jhi-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   inProduction?: boolean;
   isNavbarCollapsed = true;
   languages = LANGUAGES;
@@ -28,6 +33,7 @@ export class NavbarComponent implements OnInit {
   version = '';
   account: Account | null = null;
   entitiesNavbarItems: any[] = [];
+  unreadChats: IChat[] = []; // Define the unreadChats property here
 
   activeImgProfile = '../content/images/btn_profile_active.png';
   inactiveImgProfile = '../content/images/btn_profile_inactive.png';
@@ -53,8 +59,10 @@ export class NavbarComponent implements OnInit {
   currentImgContract = this.inactiveImgContract;
   isHoveringContract = false;
 
+  unreadImgChat = '../content/images/btn_chat_notification.png';
   userMenuIsOpen = false;
   adminMenuIsOpen = false;
+  private destroy$ = new Subject<void>();
 
   showIcons = true;
 
@@ -64,6 +72,7 @@ export class NavbarComponent implements OnInit {
     private sessionStorageService: SessionStorageService,
     private accountService: AccountService,
     private profileService: ProfileService,
+    private chatService: ChatService,
     private router: Router
   ) {
     if (VERSION) {
@@ -116,6 +125,20 @@ export class NavbarComponent implements OnInit {
         this.updateContractIcon();
       }
     });
+    /*this.chatService.chatRead.subscribe(() => {
+      this.loadUnreadChats();
+    });*/
+    interval(10000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loadUnreadChats();
+      });
+
+    this.loadUnreadChats();
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   isUserRouteActive(): boolean {
@@ -149,14 +172,23 @@ export class NavbarComponent implements OnInit {
     return currentUrl.includes('/chat');
   }
 
+  loadUnreadChats(): void {
+    this.chatService.getUnreadChatsForCurrentUser().subscribe((res: HttpResponse<IChat[]>) => {
+      this.unreadChats = res.body || [];
+      console.log('Unread chats: ' + JSON.stringify(this.unreadChats, null, 2));
+      this.updateChatIcon();
+    });
+  }
   updateChatIcon() {
     if (this.isChatRouteActive() || this.isHoveringChat) {
       this.currentImgChat = this.activeImgChat;
+    } else if (this.unreadChats.length > 0) {
+      // If there are unread chats, set the chat icon to a different image to indicate new messages
+      this.currentImgChat = this.unreadImgChat;
     } else {
       this.currentImgChat = this.inactiveImgChat;
     }
   }
-
   isFindRouteActive(): boolean {
     const currentUrl = this.router.url;
     return currentUrl.includes('pet/search');

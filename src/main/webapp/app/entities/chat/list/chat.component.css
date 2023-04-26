@@ -19,7 +19,9 @@
   width: 30%;
   cursor: pointer;
 }
-
+.unread-message {
+  border: 2px solid #ff0000; /* Change the color and border width as needed */
+}
 .chat-wrapper {
   width: 70%;
   display: flex;
@@ -90,4 +92,7 @@
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
+}
+.img-profile-border {
+  border: 2px solid #f27121;
 }
