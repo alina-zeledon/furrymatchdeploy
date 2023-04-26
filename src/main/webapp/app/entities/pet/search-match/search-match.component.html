@@ -16,8 +16,9 @@
                 <div class="objective-text bg-image">
                   {{ pets[currentPetIndex].name }}
                   <div class="pet-breed">
-                    {{ pets[currentPetIndex]?.breed?.breed }},
-                    <span *ngIf="pets[currentPetIndex]?.owner?.province === '1'">San Jose</span>
+                    {{ pets[currentPetIndex]?.breed?.breed }}
+                    <span *ngIf="pets[currentPetIndex]?.breed?.breed">,</span>
+                    <span *ngIf="pets[currentPetIndex]?.owner?.province === '1'">San José</span>
                     <span *ngIf="pets[currentPetIndex]?.owner?.province === '2'">Alajuela</span>
                     <span *ngIf="pets[currentPetIndex]?.owner?.province === '3'">Cartago</span>
                     <span *ngIf="pets[currentPetIndex]?.owner?.province === '4'">Heredia</span>
@@ -31,7 +32,7 @@
           </div>
         </div>
         <ng-template #noMorePetsTemplate>
-          <div class="no-more-pets-message">No hay más mascotas que mostrar, vuelve más tarde!</div>
+          <h1 class="no-more-pets-message">No hay más mascotas que mostrar, ¡vuelve más tarde!</h1>
         </ng-template>
       </div>
       <div *ngIf="pets.length > 0 && currentPetIndex < pets.length && !noMorePets">

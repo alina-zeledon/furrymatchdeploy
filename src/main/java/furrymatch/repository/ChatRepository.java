@@ -18,4 +18,17 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
 
     @Query("SELECT c FROM Chat c WHERE c.stateChat = :state1 OR c.stateChat = :state2")
     List<Chat> findByStateChat(@Param("state1") String state1, @Param("state2") String state2);
+
+    @Query(
+        value = "SELECT * FROM chat WHERE substring_index(state_chat, ';', -1) = 'unread' AND substring_index(substring_index(state_chat, ';', -2), ';', 1) = :ownerId",
+        nativeQuery = true
+    )
+    List<Chat> findUnreadChatsByOwnerId(@Param("ownerId") Long ownerId);
+
+    //Marks chat message as read
+    @Modifying
+    @Query(
+        "UPDATE Chat c SET c.stateChat = REPLACE(c.stateChat, 'unread', 'read') WHERE c.match.id = :matchId AND LOCATE(CONCAT(:senderId, ';'), c.stateChat) = 1 AND c.stateChat LIKE '%unread'"
+    )
+    void updateChatStateByMatchIdAndRecipientId(@Param("matchId") Long matchId, @Param("senderId") Long senderId);
 }

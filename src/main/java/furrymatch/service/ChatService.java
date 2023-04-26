@@ -120,4 +120,12 @@ public class ChatService {
         // chatRepository.deleteById(id);
         chatRepository.deleteChats(id);
     }
+
+    public List<Chat> findUnreadChatsByOwnerId(Long ownerId) {
+        return chatRepository.findUnreadChatsByOwnerId(ownerId);
+    }
+
+    public void updateChatState(Long matchId, Long senderId) {
+        chatRepository.updateChatStateByMatchIdAndRecipientId(matchId, senderId);
+    }
 }
