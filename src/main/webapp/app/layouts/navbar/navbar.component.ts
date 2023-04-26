@@ -128,13 +128,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
     /*this.chatService.chatRead.subscribe(() => {
       this.loadUnreadChats();
     });*/
+
     interval(10000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        this.loadUnreadChats();
+        if (this.accountService.isAuthenticated()) {
+          this.loadUnreadChats();
+        }
       });
 
-    this.loadUnreadChats();
+    if (this.accountService.isAuthenticated()) {
+      this.loadUnreadChats();
+    }
   }
   ngOnDestroy(): void {
     this.destroy$.next();
