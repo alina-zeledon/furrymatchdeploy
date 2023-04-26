@@ -3,6 +3,7 @@ package furrymatch.web.rest;
 import furrymatch.domain.Chat;
 import furrymatch.repository.ChatRepository;
 import furrymatch.service.ChatService;
+import furrymatch.service.UserService;
 import furrymatch.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,9 +42,12 @@ public class ChatResource {
 
     private final ChatRepository chatRepository;
 
-    public ChatResource(ChatService chatService, ChatRepository chatRepository) {
+    private final UserService userService;
+
+    public ChatResource(ChatService chatService, ChatRepository chatRepository, UserService userService) {
         this.chatService = chatService;
         this.chatRepository = chatRepository;
+        this.userService = userService;
     }
 
     /**
@@ -181,5 +185,18 @@ public class ChatResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/chats/unread")
+    public ResponseEntity<List<Chat>> getUnreadChatsForCurrentUser() {
+        Long currentOwnerId = userService.getUserWithAuthorities().get().getId();
+        List<Chat> unreadChats = chatService.findUnreadChatsByOwnerId(currentOwnerId);
+        return ResponseEntity.ok().body(unreadChats);
+    }
+
+    @PutMapping("/chats/update-state/{matchId}/{senderId}")
+    public ResponseEntity<Void> updateChatState(@PathVariable Long matchId, @PathVariable Long senderId) {
+        chatService.updateChatState(matchId, senderId);
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -28,7 +28,7 @@ export type EntityArrayResponseType = HttpResponse<IChat[]>;
 @Injectable({ providedIn: 'root' })
 export class ChatService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/chats');
-
+  public chatRead: EventEmitter<void> = new EventEmitter<void>();
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
   create(chat: NewChat): Observable<EntityResponseType> {
@@ -123,5 +123,12 @@ export class ChatService {
     return res.clone({
       body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
     });
+  }
+  getUnreadChatsForCurrentUser(): Observable<HttpResponse<IChat[]>> {
+    return this.http.get<IChat[]>(`${this.resourceUrl}/unread`, { observe: 'response' });
+  }
+
+  updateChatState(matchId: number, senderId: number): Observable<void> {
+    return this.http.put<void>(`${this.resourceUrl}/update-state/${matchId}/${senderId}`, null);
   }
 }

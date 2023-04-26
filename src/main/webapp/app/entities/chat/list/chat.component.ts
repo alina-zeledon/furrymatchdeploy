@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpHeaders } from '@angular/common/http';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 import { combineLatest, filter, Observable, of, switchMap, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -13,6 +13,7 @@ import { ASC, DESC, SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/conf
 import { EntityArrayResponseType, ChatService } from '../service/chat.service';
 import { OwnerService } from '../../owner/service/owner.service';
 import { ChatDeleteDialogComponent } from '../delete/chat-delete-dialog.component';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'jhi-chat',
@@ -30,9 +31,12 @@ export class ChatComponent implements OnInit {
   predicate = 'id';
   ascending = true;
 
+  unreadChats: IChat[] = [];
   itemsPerPage = ITEMS_PER_PAGE;
   totalItems = 0;
   page = 1;
+
+  unreadMatchIds: (number | undefined)[] = [];
 
   constructor(
     protected chatService: ChatService,
@@ -47,6 +51,7 @@ export class ChatComponent implements OnInit {
   ngOnInit(): void {
     //this.load();
     this.listChats();
+    this.loadUnreadChats();
   }
 
   listChats(): void {
@@ -60,11 +65,20 @@ export class ChatComponent implements OnInit {
           if (item.phoneNumber) {
             this.chatService.find(item.phoneNumber).subscribe(result => {
               array2[index] = { ...array[index], message: result.body?.message };
+              console.log(JSON.stringify(result, null, 2));
             });
           }
           this.chatArrays = array2;
         });
       }
+    });
+  }
+  loadUnreadChats(): void {
+    this.chatService.getUnreadChatsForCurrentUser().subscribe((res: HttpResponse<IChat[]>) => {
+      this.unreadChats = res.body || [];
+
+      this.unreadMatchIds = this.unreadChats.map(unreadChat => unreadChat.match?.id).filter(id => id !== undefined);
+      console.log('Unread chats: ' + JSON.stringify(this.unreadChats, null, 2));
     });
   }
 
@@ -95,7 +109,15 @@ export class ChatComponent implements OnInit {
     this.selectedRecipient = recipient;
     this.selectedMatchId = parseInt(recipient.identityNumber || '', 10) || null; // Convierte el identityNumber a un número
     console.log('Selected Match ID:', this.selectedMatchId);
+    console.log('Recipient ID:', this.selectedRecipient.id);
     console.log('botón presionado');
+    // Update the chat state to 'read'
+    if (this.selectedMatchId !== null && this.selectedRecipient.id !== null && this.selectedRecipient.id !== undefined) {
+      this.chatService.updateChatState(this.selectedMatchId, this.selectedRecipient.id).subscribe(() => {
+        console.log('Chat state updated to read');
+        this.chatService.chatRead.emit();
+      });
+    }
   }
 
   onChatWindowClose(): void {
@@ -196,4 +218,5 @@ export class ChatComponent implements OnInit {
   //     return [predicate + ',' + ascendingQueryParam];
   //   }
   // }
+  protected readonly parseInt = parseInt;
 }
