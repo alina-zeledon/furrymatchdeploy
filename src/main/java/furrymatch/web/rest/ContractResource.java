@@ -82,13 +82,18 @@ public class ContractResource {
         if (contract.getId() != null) {
             throw new BadRequestAlertException("A new contract cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Contract result = contractService.save(contract);
-        Match match = matchService.findOne(Long.valueOf(12)).get();
-        match.setContract(result);
-        matchService.update(match);
         User user = userService.getUserWithAuthorities().get();
         Owner owner1 = ownerService.findOne(user.getId()).get();
         Owner owner2 = ownerService.findOne(Long.valueOf(4)).get();
+
+        String other = contract.getOtherNotes() + ";" + owner1.getId() + ";1";
+        contract.setOtherNotes(other);
+        Contract result = contractService.save(contract);
+
+        Match match = matchService.findOne(Long.valueOf(12)).get();
+        match.setContract(result);
+        matchService.update(match);
+
         mailService.sendContractMail(owner1, owner2, contract, user.getEmail());
         return ResponseEntity
             .created(new URI("/api/contracts/" + result.getId()))
@@ -122,8 +127,16 @@ public class ContractResource {
         if (!contractRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        User user = userService.getUserWithAuthorities().get();
+        Owner owner1 = ownerService.findOne(user.getId()).get();
+        Owner owner2 = ownerService.findOne(Long.valueOf(4)).get();
+
+        String other = contract.getOtherNotes() + ";" + owner1.getId() + ";1";
+        contract.setOtherNotes(other);
 
         Contract result = contractService.update(contract);
+
+        mailService.sendContractMail(owner1, owner2, contract, user.getEmail());
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, contract.getId().toString()))
