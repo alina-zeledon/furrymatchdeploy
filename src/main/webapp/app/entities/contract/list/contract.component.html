@@ -1,134 +1,32 @@
-<div>
-  <h2 id="page-heading" data-cy="ContractHeading">
-    <span jhiTranslate="furryMatchApp.contract.home.title">Contracts</span>
-
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
-        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span jhiTranslate="furryMatchApp.contract.home.refreshListLabel">Refresh list</span>
-      </button>
-
-      <button
-        id="jh-create-entity"
-        data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-contract"
-        [routerLink]="['/contract/new']"
-      >
-        <fa-icon icon="plus"></fa-icon>
-        <span jhiTranslate="furryMatchApp.contract.home.createLabel"> Create a new Contract </span>
-      </button>
-    </div>
-  </h2>
-
-  <jhi-alert-error></jhi-alert-error>
-
-  <jhi-alert></jhi-alert>
-
-  <div class="alert alert-warning" id="no-result" *ngIf="contracts?.length === 0">
-    <span jhiTranslate="furryMatchApp.contract.home.notFound">No Contracts found</span>
+<div class="cnt-princ">
+  <div class="cnt-title">
+    <h1>Contratos</h1>
+    <p>
+      En FurryMatch nos tomamos en serio tu seguridad y la de tus mascotas.<br />Es por eso que en esta sección tenés la posibilidad de
+      crear contratos que podrás personalizar antes de realizar el cruce de tu mascota
+    </p>
   </div>
-
-  <div class="table-responsive table-entities" id="entities" *ngIf="contracts && contracts.length > 0">
-    <table class="table table-striped" aria-describedby="page-heading">
-      <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
-          <th scope="col" jhiSortBy="id">
-            <div class="d-flex">
-              <span jhiTranslate="global.field.id">ID</span>
-              <fa-icon class="p-1" icon="sort"></fa-icon>
-            </div>
-          </th>
-          <th scope="col" jhiSortBy="tradeMoney">
-            <div class="d-flex">
-              <span jhiTranslate="furryMatchApp.contract.tradeMoney">Trade Money</span>
-              <fa-icon class="p-1" icon="sort"></fa-icon>
-            </div>
-          </th>
-          <th scope="col" jhiSortBy="tradePups">
-            <div class="d-flex">
-              <span jhiTranslate="furryMatchApp.contract.tradePups">Trade Pups</span>
-              <fa-icon class="p-1" icon="sort"></fa-icon>
-            </div>
-          </th>
-          <th scope="col" jhiSortBy="pedigree">
-            <div class="d-flex">
-              <span jhiTranslate="furryMatchApp.contract.pedigree">Pedigree</span>
-              <fa-icon class="p-1" icon="sort"></fa-icon>
-            </div>
-          </th>
-          <th scope="col" jhiSortBy="otherNotes">
-            <div class="d-flex">
-              <span jhiTranslate="furryMatchApp.contract.otherNotes">Other Notes</span>
-              <fa-icon class="p-1" icon="sort"></fa-icon>
-            </div>
-          </th>
-          <th scope="col" jhiSortBy="contractDate">
-            <div class="d-flex">
-              <span jhiTranslate="furryMatchApp.contract.contractDate">Contract Date</span>
-              <fa-icon class="p-1" icon="sort"></fa-icon>
-            </div>
-          </th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let contract of contracts; trackBy: trackId" data-cy="entityTable">
-          <td>
-            <a [routerLink]="['/contract', contract.id, 'view']">{{ contract.id }}</a>
-          </td>
-          <td>{{ contract.tradeMoney }}</td>
-          <td>{{ contract.tradePups }}</td>
-          <td>{{ contract.pedigree }}</td>
-          <td>{{ contract.otherNotes }}</td>
-          <td>{{ contract.contractDate | formatMediumDate }}</td>
-          <td class="text-end">
-            <div class="btn-group">
-              <button
-                type="submit"
-                [routerLink]="['/contract', contract.id, 'view']"
-                class="btn btn-info btn-sm"
-                data-cy="entityDetailsButton"
-              >
-                <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-              </button>
-
-              <button
-                type="submit"
-                [routerLink]="['/contract', contract.id, 'edit']"
-                class="btn btn-primary btn-sm"
-                data-cy="entityEditButton"
-              >
-                <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-              </button>
-
-              <button type="submit" (click)="delete(contract)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
-                <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div *ngIf="contracts && contracts.length > 0">
-    <div class="d-flex justify-content-center">
-      <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
-    </div>
-
-    <div class="d-flex justify-content-center">
-      <ngb-pagination
-        [collectionSize]="totalItems"
-        [page]="page"
-        [pageSize]="itemsPerPage"
-        [maxSize]="5"
-        [rotate]="true"
-        [boundaryLinks]="true"
-        (pageChange)="navigateToPage($event)"
-      ></ngb-pagination>
+  <div class="cnt-dates">
+    <div class="login-wrapper">
+      <div *ngFor="let petEntry of getPetDataValues()" class="pet-entry">
+        <div class="contract-with">Mi contrato con {{ petEntry.pet.name }}</div>
+        <img *ngIf="petEntry.photo?.photoUrl" [src]="petEntry.photo?.photoUrl" alt="Pet photo" class="img-objective" />
+        <div class="txt-pet">
+          <div class="objective-text">
+            {{ petEntry.pet.name }}
+          </div>
+        </div>
+      </div>
+      <div class="content-wrapper" *ngIf="hasNoContract()">
+        <span class="content-text">
+          <h1 class="h1-black">¡Creá un contrato!</h1>
+          <p>
+            <span class="tip">Tip:</span> Antes de comenzar, te recomendamos que te pongas de acuerdo con el otro dueño(a) para poder crear
+            un contrato en la que ambas partes estén satisfechas.
+          </p>
+        </span>
+        <button class="btn-blue">Crear contrato</button>
+      </div>
     </div>
   </div>
 </div>
