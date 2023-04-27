@@ -33,6 +33,7 @@ export class ContractUpdateComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ contract }) => {
       this.contract = contract;
       if (contract) {
+        contract.otherNotes = contract.otherNotes.slice(0, contract.otherNotes.indexOf(';'));
         this.updateForm(contract);
       }
     });
