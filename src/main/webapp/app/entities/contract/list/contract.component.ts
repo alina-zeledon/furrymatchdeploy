@@ -1,24 +1,41 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpHeaders } from '@angular/common/http';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
-import { combineLatest, filter, Observable, switchMap, tap } from 'rxjs';
+import { combineLatest, filter, forkJoin, Observable, switchMap, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
+import { PetService } from '../../pet/service/pet.service';
 import { IContract } from '../contract.model';
-
+import { LikeeService } from '../../likee/service/likee.service';
 import { ITEMS_PER_PAGE, PAGE_HEADER, TOTAL_COUNT_RESPONSE_HEADER } from 'app/config/pagination.constants';
 import { ASC, DESC, SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigation.constants';
 import { EntityArrayResponseType, ContractService } from '../service/contract.service';
 import { ContractDeleteDialogComponent } from '../delete/contract-delete-dialog.component';
+import { IPet } from '../../pet/pet.model';
+import { IPhoto } from '../../photo/photo.model';
+import { ILikee } from '../../likee/likee.model';
+import { IMatch } from '../../match/match.model';
+import { PhotoService } from '../../photo/service/photo.service';
+import { MatchService } from '../../match/service/match.service';
+
+interface PetEntry {
+  pet: IPet;
+  photo: IPhoto | undefined;
+}
 
 @Component({
   selector: 'jhi-contract',
   templateUrl: './contract.component.html',
+  styleUrls: ['./contract.component.css'],
 })
 export class ContractComponent implements OnInit {
+  matches?: IMatch[];
   contracts?: IContract[];
   isLoading = false;
+  currentPetId: number | null = null;
+  firstLikedIds: number[] = [];
+  petsIds: number[] = [];
 
+  petData: Map<number, { pet: IPet; photo: IPhoto | undefined }> = new Map();
   predicate = 'id';
   ascending = true;
 
@@ -30,15 +47,28 @@ export class ContractComponent implements OnInit {
     protected contractService: ContractService,
     protected activatedRoute: ActivatedRoute,
     public router: Router,
-    protected modalService: NgbModal
+    protected modalService: NgbModal,
+    protected petService: PetService,
+    protected likeeService: LikeeService,
+    protected photoService: PhotoService,
+    private changeDetector: ChangeDetectorRef,
+    protected matchService: MatchService
   ) {}
 
   trackId = (_index: number, item: IContract): number => this.contractService.getContractIdentifier(item);
 
   ngOnInit(): void {
+    this.loadSearchCriteriaForCurrentUser();
     this.load();
+    this.loadMatches();
   }
 
+  loadSearchCriteriaForCurrentUser(): void {
+    this.matchService.getCurrentUserPetId().subscribe(response => {
+      this.currentPetId = response.body;
+      console.log('PET ID: ' + this.currentPetId);
+    });
+  }
   delete(contract: IContract): void {
     const modalRef = this.modalService.open(ContractDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.contract = contract;
@@ -131,5 +161,107 @@ export class ContractComponent implements OnInit {
     } else {
       return [predicate + ',' + ascendingQueryParam];
     }
+  }
+
+  loadMatches(): void {
+    this.matchService.query().subscribe(
+      (res: HttpResponse<IMatch[]>) => {
+        this.onSuccess(res);
+      },
+      () => {
+        console.log('Error loading matches');
+      }
+    );
+  }
+
+  protected onSuccess(response: HttpResponse<IMatch[]>): void {
+    this.matches = response.body || [];
+    this.matches.forEach(match => {
+      if (match.firstLiked?.id) {
+        this.firstLikedIds.push(match.firstLiked.id);
+      }
+    });
+    console.log('Ids en tabla de matches: ' + this.firstLikedIds);
+    this.loadPetsFromLikee();
+  }
+
+  loadPetsFromLikee() {
+    const observables: Observable<HttpResponse<ILikee>>[] = [];
+
+    this.firstLikedIds.forEach((likeeId: number) => {
+      observables.push(this.likeeService.find(likeeId));
+    });
+
+    forkJoin(observables).subscribe((responses: HttpResponse<ILikee>[]) => {
+      responses.forEach((response: HttpResponse<ILikee>) => {
+        const likee = response.body;
+
+        if (likee?.firstPet?.id === this.currentPetId || likee?.secondPet?.id === this.currentPetId) {
+          if (likee.firstPet?.id && likee.firstPet.id !== this.currentPetId) {
+            this.petsIds.push(likee.firstPet.id);
+          }
+          if (likee.secondPet?.id && likee.secondPet.id !== this.currentPetId) {
+            this.petsIds.push(likee.secondPet.id);
+          }
+        }
+      });
+
+      console.log('Ids en tabla de likees: ' + this.petsIds);
+      this.loadPetObjects();
+    });
+  }
+
+  loadPetObjects() {
+    const petRequests: Observable<HttpResponse<IPet>>[] = Array.from(this.petsIds).map(petId => this.petService.find(petId));
+
+    forkJoin(petRequests).subscribe(pets => {
+      pets.forEach(petResponse => {
+        if (petResponse.body) {
+          this.petData.set(petResponse.body.id, { pet: petResponse.body, photo: undefined });
+        }
+      });
+
+      console.log('Pet Data (antes de fotos):', this.petData); // Agrega este mensaje de depuración
+      this.loadPetPhotos();
+    });
+  }
+
+  loadPetPhotos() {
+    const photoRequests: Observable<EntityArrayResponseType>[] = Array.from(this.petsIds).map(petId =>
+      this.photoService.findAllPhotosByPetID(petId)
+    );
+
+    forkJoin(photoRequests).subscribe(photos => {
+      photos.forEach((photoResponse, index) => {
+        console.log('Photo Response:', photoResponse);
+        const photo = photoResponse.body?.length ? photoResponse.body[0] : undefined;
+        if (photo) {
+          const petId = this.petsIds[index];
+          const pet = this.petData.get(petId)?.pet;
+          console.log('Pet ID:', petId, 'Pet:', pet);
+          if (pet) {
+            this.petData.set(petId, { pet: pet, photo: photo });
+            this.changeDetector.detectChanges(); // Añade esta línea
+          }
+        }
+      });
+
+      console.log('Pet Data:', this.petData);
+    });
+  }
+  getPetDataValues(): PetEntry[] {
+    return Array.from(this.petData.values());
+  }
+  hasNoContract(): boolean {
+    if (this.matches) {
+      return this.matches.some(match => match.contract === null);
+    }
+    return false;
+  }
+  selectPet(id: number): void {
+    this.petService.selectedPet(id).subscribe({
+      next: () => this.router.navigateByUrl('/pet/' + id + '/view'),
+      error: () => console.log('error'),
+    });
   }
 }

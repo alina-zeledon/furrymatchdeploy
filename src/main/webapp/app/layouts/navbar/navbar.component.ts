@@ -180,7 +180,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   loadUnreadChats(): void {
     this.chatService.getUnreadChatsForCurrentUser().subscribe((res: HttpResponse<IChat[]>) => {
       this.unreadChats = res.body || [];
-      console.log('Unread chats: ' + JSON.stringify(this.unreadChats, null, 2));
+      //console.log('Unread chats: ' + JSON.stringify(this.unreadChats, null, 2));
       this.updateChatIcon();
     });
   }
