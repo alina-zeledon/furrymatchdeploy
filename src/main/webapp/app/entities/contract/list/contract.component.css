@@ -37,7 +37,7 @@ p {
 /*//photo styles*/
 .login-wrapper {
   display: flex;
-  justify-content: flex-start;
+  flex-direction: column;
   margin: 3% 0 5% 0;
 }
 
@@ -86,4 +86,15 @@ p {
   font-weight: bold;
   display: block;
   margin-bottom: 23px;
+}
+
+.pet-row {
+  display: flex;
+  margin-bottom: 30px; /* Adjust the value to your needs */
+}
+
+.update-confirm-contract {
+  display: flex;
+  vertical-align: top; /* To align it with the pet-entry */
+  margin-top: 57px;
 }

@@ -122,4 +122,8 @@ export class ContractService {
       body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
     });
   }
+
+  getMatchedPetsAndContracts(currentPetId: number | null): Observable<HttpResponse<any[]>> {
+    return this.http.get<any[]>(`${this.resourceUrl}/matched-pets-no-contract/${currentPetId}`, { observe: 'response' });
+  }
 }
