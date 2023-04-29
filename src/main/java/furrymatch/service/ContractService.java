@@ -129,4 +129,8 @@ public class ContractService {
         log.debug("Request to delete Contract : {}", id);
         contractRepository.deleteById(id);
     }
+
+    public List<Object[]> findMatchedPetsWithNoContract(Long currentPetId) {
+        return contractRepository.findMatchedPetsAnContracts(currentPetId);
+    }
 }

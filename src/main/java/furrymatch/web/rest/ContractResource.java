@@ -94,7 +94,7 @@ public class ContractResource {
         match.setContract(result);
         matchService.update(match);
 
-        mailService.sendContractMail(owner1, owner2, contract, user.getEmail());
+        //mailService.sendContractMail(owner1, owner2, contract, user.getEmail());
         return ResponseEntity
             .created(new URI("/api/contracts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -228,5 +228,11 @@ public class ContractResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/contracts/matched-pets-no-contract/{currentPetId}")
+    public ResponseEntity<List<Object[]>> getMatchedPetsWithNoContract(@PathVariable Long currentPetId) {
+        List<Object[]> matchedPets = contractService.findMatchedPetsWithNoContract(currentPetId);
+        return ResponseEntity.ok().body(matchedPets);
     }
 }
