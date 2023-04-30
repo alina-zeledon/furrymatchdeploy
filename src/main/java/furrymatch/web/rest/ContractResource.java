@@ -1,10 +1,9 @@
 package furrymatch.web.rest;
 
-import furrymatch.domain.Contract;
-import furrymatch.domain.Match;
-import furrymatch.domain.Owner;
-import furrymatch.domain.User;
+import furrymatch.domain.*;
 import furrymatch.repository.ContractRepository;
+import furrymatch.repository.UserRepository;
+import furrymatch.security.SecurityUtils;
 import furrymatch.service.*;
 import furrymatch.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -53,13 +52,20 @@ public class ContractResource {
 
     private final UserService userService;
 
+    private final UserRepository userRepository;
+
+    private Match match;
+
+    private Owner owner2;
+
     public ContractResource(
         ContractService contractService,
         ContractRepository contractRepository,
         MatchService matchService,
         MailService mailService,
         OwnerService ownerService,
-        UserService userService
+        UserService userService,
+        UserRepository userRepository
     ) {
         this.contractService = contractService;
         this.contractRepository = contractRepository;
@@ -67,6 +73,7 @@ public class ContractResource {
         this.mailService = mailService;
         this.ownerService = ownerService;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -84,13 +91,20 @@ public class ContractResource {
         }
         User user = userService.getUserWithAuthorities().get();
         Owner owner1 = ownerService.findOne(user.getId()).get();
-        Owner owner2 = ownerService.findOne(Long.valueOf(4)).get();
+
+        SecurityUtils
+            .getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(userr -> {
+                owner2 = ownerService.findOne(Long.valueOf((userr.getLastName()).substring((userr.getLastName()).indexOf(",") + 1))).get();
+                match = matchService.findOne(Long.valueOf((userr.getLastName()).substring(0, (userr.getLastName()).indexOf(",")))).get();
+                System.out.println(match);
+            });
 
         String other = contract.getOtherNotes() + ";" + owner1.getId() + ";1";
         contract.setOtherNotes(other);
         Contract result = contractService.save(contract);
 
-        Match match = matchService.findOne(Long.valueOf(12)).get();
         match.setContract(result);
         matchService.update(match);
 

@@ -264,6 +264,10 @@ public class UserService {
         userRepository.updateUserSelectedPet(petId, id);
     }
 
+    public void updateUserMatchPet(String matchPetId, Long id) {
+        userRepository.updateUserMatchPet(matchPetId, id);
+    }
+
     public void deleteUser(String login) {
         userRepository
             .findOneByLogin(login)

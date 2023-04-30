@@ -41,4 +41,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "UPDATE jhi_user SET image_url = :petId WHERE id = :id", nativeQuery = true)
     void updateUserSelectedPet(@Param("petId") Long petId, @Param("id") Long id);
+
+    @Modifying
+    @Query(value = "UPDATE jhi_user SET last_name = :matchPetId WHERE id = :id", nativeQuery = true)
+    void updateUserMatchPet(@Param("matchPetId") String matchPetId, @Param("id") Long id);
 }

@@ -311,4 +311,14 @@ public class AccountResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, "user", id.toString()))
             .build();
     }
+
+    @PostMapping("/account/saveMatchPet/{matchPetId}")
+    public ResponseEntity<Void> updateMatchPet(@PathVariable(value = "matchPetId", required = false) final String matchPetId) {
+        Long id = userService.getUserWithAuthorities().get().getId();
+        userService.updateUserMatchPet(matchPetId, id);
+        return ResponseEntity
+            .noContent()
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, "user", id.toString()))
+            .build();
+    }
 }
