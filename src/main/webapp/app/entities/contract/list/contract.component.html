@@ -27,7 +27,7 @@
                 crear un contrato en la que ambas partes estén satisfechas.
               </p>
             </span>
-            <button class="btn-blue" routerLink="/contract/new">Crear contrato</button>
+            <button class="btn-blue" (click)="saveMatchPet(petEntry.matchId, petEntry.ownerId)">Crear contrato</button>
           </div>
           <div *ngIf="isOtherUserCreatingContract(petEntry)" class="content-wrapper">
             <span class="content-text">

@@ -52,7 +52,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
         Swal.fire({
           title: 'Error',
           text: 'Correo o contraseña incorrecta.',
-          type: 'error',
           icon: 'error',
           confirmButtonColor: '#3381f6',
           confirmButtonText: 'Cerrar',

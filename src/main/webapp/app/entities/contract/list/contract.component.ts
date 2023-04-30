@@ -18,6 +18,8 @@ interface PetEntry {
   pet: IPet;
   photo: IPhoto | undefined;
   contract: IContract | null;
+  matchId: number;
+  ownerId: number;
   otherNotes?: string;
 }
 @Component({
@@ -31,7 +33,7 @@ export class ContractComponent implements OnInit {
   isLoading = false;
   currentPetId: number | null = null;
   // petData: Map<number, { pet: IPet; photo: IPhoto | undefined }> = new Map();
-  petData: Map<number, { pet: IPet; photo: IPhoto | undefined; contract: IContract | null }> = new Map();
+  petData: Map<number, { pet: IPet; photo: IPhoto | undefined; contract: IContract | null; matchId: number; ownerId: number }> = new Map();
 
   predicate = 'id';
   ascending = true;
@@ -120,12 +122,14 @@ export class ContractComponent implements OnInit {
 
     // Save the other pets in this.petData
     this.matchedPetsAndContracts?.forEach(match => {
+      const matchId = match[0].id;
       const firstPet = match[1];
       const secondPet = match[2];
       const contract = match[0].contract;
       const otherPet = firstPet.id === this.currentPetId ? secondPet : firstPet;
+      const ownerId = firstPet.id === this.currentPetId ? secondPet.owner.id : firstPet.owner.id;
 
-      this.petData.set(otherPet.id, { pet: otherPet, photo: undefined, contract: contract });
+      this.petData.set(otherPet.id, { pet: otherPet, photo: undefined, contract: contract, matchId: matchId, ownerId: ownerId });
     });
     forkJoin(photoRequests).subscribe(photos => {
       photos.forEach((photoResponse, index) => {
@@ -192,7 +196,16 @@ export class ContractComponent implements OnInit {
   }
 
   getPetDataValues(): PetEntry[] {
-    //console.log('PET DATA VALUES' , this.petData.values())
+    console.log('PET DATA VALUES', this.petData.values());
     return Array.from(this.petData.values());
+  }
+
+  saveMatchPet(matchId: number, petId: number | undefined): void {
+    const matchPet = matchId + ',' + petId;
+    this.contractService.saveMatchPet(matchPet).subscribe({
+      next: () => this.router.navigateByUrl('/contract/new'),
+      // next: () => this.router.navigateByUrl('/search-criteria/new'),
+      error: () => console.log('error'),
+    });
   }
 }
