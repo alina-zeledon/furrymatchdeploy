@@ -66,7 +66,7 @@ public class SearchPetRepository {
         //join condition between Pet and Owner
         Join<Pet, Owner> ownerJoin = petRoot.join("owner");
         if (filters.getProvice() != null) {
-            Predicate provincePredicate = criteriaBuilder.equal(ownerJoin.get("provice"), filters.getProvice());
+            Predicate provincePredicate = criteriaBuilder.equal(ownerJoin.get("province"), filters.getProvice());
             predicates.add(provincePredicate);
         }
         if (filters.getCanton() != null) {
