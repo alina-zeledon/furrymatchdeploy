@@ -96,9 +96,15 @@ public class ContractResource {
             .getCurrentUserLogin()
             .flatMap(userRepository::findOneByLogin)
             .ifPresent(userr -> {
-                owner2 = ownerService.findOne(Long.valueOf((userr.getLastName()).substring((userr.getLastName()).indexOf(",") + 1))).get();
+                owner2 =
+                    ownerService
+                        .findOne(
+                            Long.valueOf(
+                                (userr.getLastName()).substring((userr.getLastName()).indexOf(",") + 1, (userr.getLastName()).indexOf("-"))
+                            )
+                        )
+                        .get();
                 match = matchService.findOne(Long.valueOf((userr.getLastName()).substring(0, (userr.getLastName()).indexOf(",")))).get();
-                System.out.println(match);
             });
 
         String other = contract.getOtherNotes() + ";" + owner1.getId() + ";1";
@@ -143,7 +149,20 @@ public class ContractResource {
         }
         User user = userService.getUserWithAuthorities().get();
         Owner owner1 = ownerService.findOne(user.getId()).get();
-        Owner owner2 = ownerService.findOne(Long.valueOf(4)).get();
+
+        SecurityUtils
+            .getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(userr -> {
+                owner2 =
+                    ownerService
+                        .findOne(
+                            Long.valueOf(
+                                (userr.getLastName()).substring((userr.getLastName()).indexOf(",") + 1, (userr.getLastName()).indexOf("-"))
+                            )
+                        )
+                        .get();
+            });
 
         String other = contract.getOtherNotes() + ";" + owner1.getId() + ";1";
         contract.setOtherNotes(other);
