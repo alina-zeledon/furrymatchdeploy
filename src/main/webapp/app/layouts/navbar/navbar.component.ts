@@ -13,6 +13,10 @@ import { AccountService } from 'app/core/auth/account.service';
 import { LoginService } from 'app/login/login.service';
 import { ProfileService } from 'app/layouts/profiles/profile.service';
 import { EntityNavbarItems } from 'app/entities/entity-navbar-items';
+import { filter } from 'rxjs/operators';
+
+const petsListRoute = /^\/pet$/;
+const searchCriteriaNewRoute = /^\/search-criteria\/new(\/.*)?$/;
 import { ChatService } from '../../entities/chat/service/chat.service';
 import { IChat } from '../../entities/chat/chat.model';
 
@@ -50,10 +54,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
   currentImgMatch = this.inactiveImgMatch;
   isHoveringMatches = false;
 
+  activeImgContract = '../content/images/btn_contract_active.png';
+  inactiveImgContract = '../content/images/btn_contract_inactive.png';
+  currentImgContract = this.inactiveImgContract;
+  isHoveringContract = false;
+
   unreadImgChat = '../content/images/btn_chat_notification.png';
   userMenuIsOpen = false;
   adminMenuIsOpen = false;
   private destroy$ = new Subject<void>();
+
+  showIcons = true;
 
   constructor(
     private loginService: LoginService,
@@ -71,6 +82,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.updateMatchIcon();
     this.updateChatIcon();
     this.updateFindIcon();
+    this.updateContractIcon();
   }
 
   ngOnInit(): void {
@@ -108,16 +120,26 @@ export class NavbarComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.updateContractIcon();
+      }
+    });
     /*this.chatService.chatRead.subscribe(() => {
       this.loadUnreadChats();
     });*/
+
     interval(10000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        this.loadUnreadChats();
+        if (this.accountService.isAuthenticated()) {
+          this.loadUnreadChats();
+        }
       });
 
-    this.loadUnreadChats();
+    if (this.accountService.isAuthenticated()) {
+      this.loadUnreadChats();
+    }
   }
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -126,7 +148,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   isUserRouteActive(): boolean {
     const currentUrl = this.router.url;
-    return currentUrl.includes('/pet');
+    return currentUrl.includes('pet');
   }
 
   updateUserIcon() {
@@ -158,7 +180,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   loadUnreadChats(): void {
     this.chatService.getUnreadChatsForCurrentUser().subscribe((res: HttpResponse<IChat[]>) => {
       this.unreadChats = res.body || [];
-      console.log('Unread chats: ' + JSON.stringify(this.unreadChats, null, 2));
+      //console.log('Unread chats: ' + JSON.stringify(this.unreadChats, null, 2));
       this.updateChatIcon();
     });
   }
@@ -182,6 +204,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.currentImgFind = this.activeImgFind;
     } else {
       this.currentImgFind = this.inactiveImgFind;
+    }
+  }
+
+  isContractRouteActive(): boolean {
+    const currentUrl = this.router.url;
+    return currentUrl.includes('contract');
+  }
+
+  updateContractIcon() {
+    if (this.isContractRouteActive() || this.isHoveringContract) {
+      this.currentImgContract = this.activeImgContract;
+    } else {
+      this.currentImgContract = this.inactiveImgContract;
     }
   }
 
@@ -234,5 +269,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   goToChat(): void {
     this.router.navigate(['/chat']);
+  }
+
+  get shouldShowIcons(): boolean {
+    return !this.isPetsListRouteActive();
+  }
+
+  isPetsListRouteActive(): boolean {
+    const currentUrl = this.router.url;
+    const isPetListRoute = petsListRoute.test(currentUrl);
+    const isNewSearchCriteriaRoute = searchCriteriaNewRoute.test(currentUrl);
+
+    // Devuelve true si está en la página de lista de mascotas o en la página para crear nuevos criterios de búsqueda
+    return isPetListRoute || isNewSearchCriteriaRoute;
   }
 }

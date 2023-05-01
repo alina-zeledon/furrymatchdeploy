@@ -63,8 +63,10 @@
   font-weight: 400;
   font-size: 14px;
 }
-.form-control {
-  padding: 0px !important;
+.form-controll {
+  padding-left: 13px;
+  padding-right: 13px;
+  width: 97%;
 }
 textarea {
   background: #ffffff;

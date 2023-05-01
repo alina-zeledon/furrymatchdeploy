@@ -1,0 +1,100 @@
+.cnt-princ {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start !important;
+  text-align: left;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.cnt-title,
+.cnt-dates {
+  border-bottom: 0.5px solid var(--clr-grey);
+}
+
+h1 {
+  font: var(--typo-title);
+  color: var(--clr-orange);
+}
+.h1-black {
+  color: black;
+}
+
+.tip {
+  color: var(--clr-orange);
+  font-weight: bold;
+}
+h2 {
+  font: var(--typo-title-small);
+  color: var(--clr-blue);
+  margin-top: var(--margin-md-small);
+}
+
+p {
+  font: var(--typo-global);
+}
+
+/*//photo styles*/
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 3% 0 5% 0;
+}
+
+/* Add these styles */
+.pet-entry {
+  position: relative;
+  display: inline-block;
+  margin-right: 50px;
+}
+
+.txt-pet {
+  position: absolute;
+  bottom: 26px;
+  left: 12px;
+  color: white; /* Add this line to make the pet name more readable */
+  /* Remove width and height properties */
+}
+
+/* Update the .img-objective class */
+.img-objective {
+  /* Remove margin-right property */
+  width: 150px;
+  height: 230px;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+.objective-text {
+  font: var(--typo-title-small);
+}
+
+.title-txt {
+  font: var(--typo-title-small);
+  color: var(--clr-orange);
+}
+
+.content-wrapper {
+  max-width: 30%; /* Adjust the value to your needs */
+  display: inline-block; /* To make it flow next to the pet-entry */
+  vertical-align: top; /* To align it with the pet-entry */
+  margin-top: 57px;
+}
+
+.contract-with {
+  color: var(--clr-orange);
+  font-weight: bold;
+  display: block;
+  margin-bottom: 23px;
+}
+
+.pet-row {
+  display: flex;
+  margin-bottom: 30px; /* Adjust the value to your needs */
+}
+
+.update-confirm-contract {
+  display: flex;
+  vertical-align: top; /* To align it with the pet-entry */
+  margin-top: 57px;
+}
