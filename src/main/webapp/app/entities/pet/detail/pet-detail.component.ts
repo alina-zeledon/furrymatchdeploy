@@ -13,6 +13,8 @@ import { switchMap } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { SearchCriteriaService } from '../../search-criteria/service/search-criteria.service';
 import { ISearchCriteria } from '../../search-criteria/search-criteria.model';
+import { AccountService } from '../../../core/auth/account.service';
+import { Account } from '../../../core/auth/account.model';
 
 @Component({
   selector: 'jhi-pet-detail',
@@ -20,6 +22,11 @@ import { ISearchCriteria } from '../../search-criteria/search-criteria.model';
   styleUrls: ['pet-detail.component.css'],
 })
 export class PetDetailComponent implements OnInit {
+  isOwnProfile: boolean = false;
+  account: Account | null = null;
+
+  otherUserId: number | null | undefined;
+
   showGallery = false;
   imageUrls: string[] = [];
 
@@ -41,11 +48,17 @@ export class PetDetailComponent implements OnInit {
     protected photoService: PhotoService,
     protected petService: PetService,
     protected searchCriteriaService: SearchCriteriaService,
-    private router: Router
+    private router: Router,
+    protected accountService: AccountService
   ) {}
 
   ngOnInit(): void {
     this.load();
+
+    this.accountService.getAuthenticationState().subscribe(account => {
+      this.account = account;
+      console.log(this.account?.id);
+    });
   }
 
   openGallery(): void {
@@ -74,12 +87,12 @@ export class PetDetailComponent implements OnInit {
   }
 
   protected onSuccess(data: HttpResponse<IPet>): void {
-    console.log('data: ' + data.body?.id);
     this.pet = data ? data.body : null;
-    console.log('el objeto de la mascota: ' + this.pet?.id);
     if (this.pet) {
       this.loadPhotosByPetId(this.pet.id);
       this.loadOwnerAndLocationData();
+      this.otherUserId = this.pet.owner?.id;
+      this.isOwnProfile = this.account?.id == this.otherUserId;
     }
   }
 

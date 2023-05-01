@@ -17,7 +17,7 @@ export interface IPet {
   desireAmmount?: number | null;
   owner?: Pick<
     IOwner,
-    'user_id' | 'firstName' | 'secondLastName' | 'firstLastName' | 'secondLastName' | 'phoneNumber' | 'canton' | 'province' | 'photo'
+    'id' | 'user_id' | 'firstName' | 'secondLastName' | 'firstLastName' | 'secondLastName' | 'phoneNumber' | 'canton' | 'province' | 'photo'
   > | null;
   breed?: Pick<IBreed, 'id' | 'breed'> | null;
   photos?: IPhoto[];
