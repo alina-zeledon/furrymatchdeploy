@@ -60,7 +60,7 @@
             <div class="cnt-inputs">
               <label class="form-label">Raza</label>
               <select class="form-control" id="breed" formControlName="breed" data-cy="breed" name="breed">
-                <option value="null"></option>
+                <option [ngValue]="null">{{ 'furryMatchApp.Sex.null' | translate }}</option>
                 <option *ngFor="let breed of filteredBreedsSharedCollection" [value]="breed.id">{{ breed.breed }}</option>
               </select>
             </div>
@@ -84,7 +84,7 @@
                 data-cy="provice"
                 (change)="updateProvince($event)"
               >
-                <option value="">Provincia</option>
+                <option [ngValue]="null"></option>
                 <option *ngFor="let provice of provinces" [value]="provice.id">{{ provice.name }}</option>
               </select>
             </div>
@@ -100,7 +100,7 @@
                 data-cy="canton"
                 (change)="updateCanton($event)"
               >
-                <option value="">Cantón</option>
+                <option [ngValue]="null"></option>
                 <option *ngFor="let canton of cantones" [value]="canton.id">{{ canton.name }}</option>
               </select>
             </div>
@@ -108,7 +108,7 @@
             <div class="cnt-inputs">
               <label class="lbl-txt">Elegí un distrito</label>
               <select class="form-control" id="district" name="district" formControlName="district" data-cy="district">
-                <option value="">Distrito</option>
+                <option [ngValue]="null"></option>
                 <option *ngFor="let district of districts" [value]="district.id">{{ district.name }}</option>
               </select>
             </div>

@@ -200,8 +200,8 @@ export class ContractComponent implements OnInit {
     return Array.from(this.petData.values());
   }
 
-  saveMatchPet(matchId: number, petId: number | undefined): void {
-    const matchPet = matchId + ',' + petId;
+  saveMatchPet(matchId: number, ownerId: number | undefined, petId: number): void {
+    const matchPet = matchId + ',' + ownerId + '-' + petId;
     this.contractService.saveMatchPet(matchPet).subscribe({
       next: () => this.router.navigateByUrl('/contract/new'),
       // next: () => this.router.navigateByUrl('/search-criteria/new'),

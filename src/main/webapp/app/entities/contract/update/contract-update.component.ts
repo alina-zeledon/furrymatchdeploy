@@ -4,12 +4,16 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import dayjs from 'dayjs/esm';
+import { PetService } from '../../pet/service/pet.service';
+import { IPet } from '../../pet/pet.model';
 
 import { ContractFormService, ContractFormGroup } from './contract-form.service';
 import { IContract } from '../contract.model';
 import { ContractService } from '../service/contract.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { IPhoto } from '../../photo/photo.model';
+import { PhotoService } from '../../photo/service/photo.service';
 
 @Component({
   selector: 'jhi-contract-update',
@@ -19,6 +23,8 @@ import Swal from 'sweetalert2';
 export class ContractUpdateComponent implements OnInit {
   isSaving = false;
   contract: IContract | null = null;
+  pet: IPet | null = null;
+  petImages: IPhoto[] = [];
 
   editForm: ContractFormGroup = this.contractFormService.createContractFormGroup();
 
@@ -26,7 +32,9 @@ export class ContractUpdateComponent implements OnInit {
     protected contractService: ContractService,
     protected contractFormService: ContractFormService,
     protected activatedRoute: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
+    protected petService: PetService,
+    protected photoService: PhotoService
   ) {}
 
   ngOnInit(): void {
@@ -36,6 +44,15 @@ export class ContractUpdateComponent implements OnInit {
         contract.otherNotes = contract.otherNotes.slice(0, contract.otherNotes.indexOf(';'));
         this.updateForm(contract);
       }
+      this.petService.findPetContract().subscribe(response => {
+        this.pet = response.body;
+        if (this.pet) {
+          this.photoService.findAllPhotosByPetID(this.pet?.id).subscribe(response => {
+            this.petImages = response.body ?? [];
+            console.log(this.petImages);
+          });
+        }
+      });
     });
   }
 
