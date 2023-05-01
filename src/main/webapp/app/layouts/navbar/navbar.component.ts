@@ -17,6 +17,8 @@ import { filter } from 'rxjs/operators';
 
 const petsListRoute = /^\/pet$/;
 const searchCriteriaNewRoute = /^\/search-criteria\/new(\/.*)?$/;
+const petNewRoute = /^\/pet\/new$/;
+
 import { ChatService } from '../../entities/chat/service/chat.service';
 import { IChat } from '../../entities/chat/chat.model';
 
@@ -279,8 +281,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     const currentUrl = this.router.url;
     const isPetListRoute = petsListRoute.test(currentUrl);
     const isNewSearchCriteriaRoute = searchCriteriaNewRoute.test(currentUrl);
+    const isNewPetRoute = petNewRoute.test(currentUrl);
 
     // Devuelve true si está en la página de lista de mascotas o en la página para crear nuevos criterios de búsqueda
-    return isPetListRoute || isNewSearchCriteriaRoute;
+    return isPetListRoute || isNewSearchCriteriaRoute || isNewPetRoute;
   }
 }

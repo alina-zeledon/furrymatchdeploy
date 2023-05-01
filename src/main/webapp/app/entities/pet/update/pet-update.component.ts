@@ -34,6 +34,8 @@ export class PetUpdateComponent implements OnInit {
   maxPhotos = 5;
   update = false;
 
+  photosToDelete: number[] = [];
+
   activeImageIndex = 0;
 
   ownersSharedCollection: IOwner[] = [];
@@ -124,21 +126,47 @@ export class PetUpdateComponent implements OnInit {
   }
 
   onSelect(event?: any): void {
-    const maxPhotosReached = this.update ? this.petUpdateFiles.length >= this.maxPhotos : this.petFiles.length >= this.maxPhotos;
+    const totalExistingPhotos = this.petFiles.length;
+    const totalPhotosToDelete = this.photosToDelete.length;
+    const remainingPhotos = totalExistingPhotos - totalPhotosToDelete;
 
-    if (maxPhotosReached) {
-      Swal.fire({
-        title: 'Error',
-        text: 'Solo se permiten hasta 5 fotos por mascota',
-        icon: 'error',
-        confirmButtonColor: '#3381f6',
-        confirmButtonText: 'Cerrar',
-      });
-      return;
+    if (this.update) {
+      const newPhotos = this.petUpdateFiles.length + event.addedFiles.length;
+      const totalPhotos = remainingPhotos + newPhotos;
+
+      const maxPhotosReached = totalPhotos > this.maxPhotos;
+
+      if (maxPhotosReached) {
+        Swal.fire({
+          title: 'Error',
+          text: 'Has alcanzado el límite de fotos. Por favor, elimina algunas fotos antes de agregar nuevas.',
+          icon: 'error',
+          confirmButtonColor: '#3381f6',
+          confirmButtonText: 'Cerrar',
+        });
+        return;
+      }
+
+      this.petUpdateFiles.push(...event.addedFiles);
+    } else {
+      const newPhotos = this.petFiles.length + event.addedFiles.length;
+      const totalPhotos = newPhotos;
+
+      const maxPhotosReached = totalPhotos > this.maxPhotos;
+
+      if (maxPhotosReached) {
+        Swal.fire({
+          title: 'Error',
+          text: 'Solo se permiten hasta 5 fotos por mascota',
+          icon: 'error',
+          confirmButtonColor: '#3381f6',
+          confirmButtonText: 'Cerrar',
+        });
+        return;
+      }
+
+      this.petFiles.push(...event.addedFiles);
     }
-
-    const filesArray = this.update ? this.petUpdateFiles : this.petFiles;
-    filesArray.push(...event.addedFiles);
   }
 
   onRemove(event?: any): void {
@@ -180,9 +208,8 @@ export class PetUpdateComponent implements OnInit {
               this.petFiles.splice(photoToRemoveIndex, 1);
               this.petPhotoData.splice(photoToRemoveIndex, 1);
 
-              // Si se trata de una foto existente, elimínela de la base de datos
               if (removedPhotoId) {
-                this.deletePhotoFromDatabase(removedPhotoId);
+                this.photosToDelete.push(removedPhotoId);
               }
 
               Swal.fire({
@@ -199,17 +226,16 @@ export class PetUpdateComponent implements OnInit {
     }
   }
 
-  deletePhotoFromDatabase(photoId: number): void {
-    this.photoService.delete(photoId).subscribe(() => {
-      console.log('Foto con id: ' + photoId + 'fue eliminada de la base de datos');
-    });
-    Swal.fire({
-      title: 'Fotografía borrada exitosamente',
-      text: 'Continuá actualizando los datos.',
-      icon: 'success',
-      confirmButtonColor: '#3381f6',
-      confirmButtonText: 'Cerrar',
-    });
+  isPhotoDuplicate(photoUrl: string): boolean {
+    return this.editForm.get(['photos'])?.value.some((photo: IPhoto) => photo.photoUrl === photoUrl);
+  }
+
+  generateUniqueFilename() {
+    const date = new Date();
+    const timestamp = date.getTime();
+    const randomNum = Math.floor(Math.random() * 1000);
+
+    return `image_${timestamp}_${randomNum}.jpg`;
   }
 
   onUpload(): void {
@@ -241,20 +267,10 @@ export class PetUpdateComponent implements OnInit {
           const existingPhotos = response.body;
           const totalPhotos = (existingPhotos?.length || 0) + files.length;
 
-          if (totalPhotos > 5) {
-            Swal.fire({
-              title: 'Error',
-              text: 'Solo se permiten hasta 5 fotos por mascota',
-              icon: 'error',
-              confirmButtonColor: '#3381f6',
-              confirmButtonText: 'Cerrar',
-            });
-            return;
-          }
-
           const uploadObservables = files.map(file_data => {
+            const uniqueFilename = this.generateUniqueFilename(); // <-- Llamar a la función aquí
             const data = new FormData();
-            data.append('file', file_data);
+            data.append('file', file_data, uniqueFilename); // <-- Añadir el nombre de archivo único aquí
             data.append('upload_preset', 'furry_match');
             data.append('cloud_name', 'alocortesu');
 
@@ -277,14 +293,6 @@ export class PetUpdateComponent implements OnInit {
 
             const photos = this.createUpdatePhotosArray();
             console.log('Objeto photos:', photos);
-
-            photos.forEach(photo => {
-              console.log('Foto a enviar al servicio: ', photos);
-
-              this.photoService.create(photo).subscribe(() => {
-                console.log('Foto ' + photo.photoUrl + ' fue ingresada a la base de datos');
-              });
-            });
           });
           this.uploadNewPhotos(files);
         });
@@ -292,8 +300,9 @@ export class PetUpdateComponent implements OnInit {
     } else {
       // Lógica original para fotos nuevas
       files.forEach(file_data => {
+        const uniqueFilename = this.generateUniqueFilename();
         const data = new FormData();
-        data.append('file', file_data);
+        data.append('file', file_data, uniqueFilename);
         data.append('upload_preset', 'furry_match');
         data.append('cloud_name', 'alocortesu');
 
@@ -347,11 +356,16 @@ export class PetUpdateComponent implements OnInit {
       console.log('Objeto photos:', photos);
 
       photos.forEach(photo => {
+        const photoUrl = photo.photoUrl || '';
         console.log('Foto a enviar al servicio: ', photo);
 
-        this.photoService.create(photo).subscribe(() => {
-          console.log('Foto ' + photo.photoUrl + ' fue ingresada a la base de datos');
-        });
+        if (!this.isPhotoDuplicate(photoUrl)) {
+          this.photoService.create(photo).subscribe(() => {
+            console.log('Foto ' + photo.photoUrl + ' fue ingresada a la base de datos');
+          });
+        } else {
+          console.log('La foto ya ha sido subida: ', photo.photoUrl);
+        }
       });
     });
   }
@@ -399,7 +413,7 @@ export class PetUpdateComponent implements OnInit {
     }
 
     if (pet.id !== null) {
-      this.subscribeToSaveResponse(this.petService.update(pet), 1);
+      this.subscribeToSaveResponse(this.petService.updateWithPhotosToDelete(pet, this.photosToDelete), 1);
     } else {
       this.subscribeToSaveResponse(this.petService.create(pet), 2);
     }
@@ -508,7 +522,7 @@ export class PetUpdateComponent implements OnInit {
       showDenyButton: true,
       confirmButtonText: 'Sí',
       denyButtonText: 'No',
-      icon: 'success',
+      icon: 'warning',
       confirmButtonColor: '#3381f6',
       denyButtonColor: '#3381f6',
     }).then((result: any) => {

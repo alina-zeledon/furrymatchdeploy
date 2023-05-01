@@ -34,6 +34,14 @@ export class PetService {
     return this.http.put<IPet>(`${this.resourceUrl}/${this.getPetIdentifier(pet)}`, pet, { observe: 'response' });
   }
 
+  updateWithPhotosToDelete(pet: IPet, photosToDelete: number[]): Observable<EntityResponseType> {
+    const requestData = {
+      pet: pet,
+      photosToDelete: photosToDelete,
+    };
+    return this.http.put<IPet>(`${this.resourceUrl}/${this.getPetIdentifier(pet)}`, requestData, { observe: 'response' });
+  }
+
   partialUpdate(pet: PartialUpdatePet): Observable<EntityResponseType> {
     return this.http.patch<IPet>(`${this.resourceUrl}/${this.getPetIdentifier(pet)}`, pet, { observe: 'response' });
   }

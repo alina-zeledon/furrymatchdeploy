@@ -14,4 +14,6 @@ import org.springframework.stereotype.Repository;
 public interface PhotoRepository extends JpaRepository<Photo, Long> {
     @Query(value = "SELECT * FROM Photo WHERE pet_id = :petId", nativeQuery = true)
     List<Photo> findAllPhotosByPetID(@Param("petId") Long petId);
+
+    void deleteByIdIn(List<Long> ids);
 }
