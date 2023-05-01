@@ -1,10 +1,9 @@
 package furrymatch.web.rest;
 
-import furrymatch.domain.Contract;
-import furrymatch.domain.Match;
-import furrymatch.domain.Owner;
-import furrymatch.domain.User;
+import furrymatch.domain.*;
 import furrymatch.repository.ContractRepository;
+import furrymatch.repository.UserRepository;
+import furrymatch.security.SecurityUtils;
 import furrymatch.service.*;
 import furrymatch.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -53,13 +52,20 @@ public class ContractResource {
 
     private final UserService userService;
 
+    private final UserRepository userRepository;
+
+    private Match match;
+
+    private Owner owner2;
+
     public ContractResource(
         ContractService contractService,
         ContractRepository contractRepository,
         MatchService matchService,
         MailService mailService,
         OwnerService ownerService,
-        UserService userService
+        UserService userService,
+        UserRepository userRepository
     ) {
         this.contractService = contractService;
         this.contractRepository = contractRepository;
@@ -67,6 +73,7 @@ public class ContractResource {
         this.mailService = mailService;
         this.ownerService = ownerService;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -84,17 +91,30 @@ public class ContractResource {
         }
         User user = userService.getUserWithAuthorities().get();
         Owner owner1 = ownerService.findOne(user.getId()).get();
-        Owner owner2 = ownerService.findOne(Long.valueOf(4)).get();
+
+        SecurityUtils
+            .getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(userr -> {
+                owner2 =
+                    ownerService
+                        .findOne(
+                            Long.valueOf(
+                                (userr.getLastName()).substring((userr.getLastName()).indexOf(",") + 1, (userr.getLastName()).indexOf("-"))
+                            )
+                        )
+                        .get();
+                match = matchService.findOne(Long.valueOf((userr.getLastName()).substring(0, (userr.getLastName()).indexOf(",")))).get();
+            });
 
         String other = contract.getOtherNotes() + ";" + owner1.getId() + ";1";
         contract.setOtherNotes(other);
         Contract result = contractService.save(contract);
 
-        Match match = matchService.findOne(Long.valueOf(12)).get();
         match.setContract(result);
         matchService.update(match);
 
-        mailService.sendContractMail(owner1, owner2, contract, user.getEmail());
+        //mailService.sendContractMail(owner1, owner2, contract, user.getEmail());
         return ResponseEntity
             .created(new URI("/api/contracts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -129,7 +149,20 @@ public class ContractResource {
         }
         User user = userService.getUserWithAuthorities().get();
         Owner owner1 = ownerService.findOne(user.getId()).get();
-        Owner owner2 = ownerService.findOne(Long.valueOf(4)).get();
+
+        SecurityUtils
+            .getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(userr -> {
+                owner2 =
+                    ownerService
+                        .findOne(
+                            Long.valueOf(
+                                (userr.getLastName()).substring((userr.getLastName()).indexOf(",") + 1, (userr.getLastName()).indexOf("-"))
+                            )
+                        )
+                        .get();
+            });
 
         String other = contract.getOtherNotes() + ";" + owner1.getId() + ";1";
         contract.setOtherNotes(other);
@@ -228,5 +261,11 @@ public class ContractResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/contracts/matched-pets-no-contract/{currentPetId}")
+    public ResponseEntity<List<Object[]>> getMatchedPetsWithNoContract(@PathVariable Long currentPetId) {
+        List<Object[]> matchedPets = contractService.findMatchedPetsWithNoContract(currentPetId);
+        return ResponseEntity.ok().body(matchedPets);
     }
 }

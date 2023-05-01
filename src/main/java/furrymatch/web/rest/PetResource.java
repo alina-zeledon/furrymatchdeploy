@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import furrymatch.domain.Pet;
 import furrymatch.domain.SearchCriteria;
 import furrymatch.repository.PetRepository;
+import furrymatch.repository.UserRepository;
+import furrymatch.security.SecurityUtils;
+import furrymatch.service.OwnerService;
 import furrymatch.service.PetService;
 import furrymatch.service.SearchCriteriaService;
 import furrymatch.service.UserService;
@@ -52,17 +55,23 @@ public class PetResource {
 
     @Autowired
     private ObjectMapper objectMapper;
+    private final UserRepository userRepository;
+
+    private Long petId;
 
     public PetResource(
         PetService petService,
         PetRepository petRepository,
         UserService userService,
-        SearchCriteriaService searchCriteriaService
+        SearchCriteriaService searchCriteriaService,
+        UserRepository userRepository,
+        OwnerService ownerService
     ) {
         this.petService = petService;
         this.petRepository = petRepository;
         this.userService = userService;
         this.searchCriteriaService = searchCriteriaService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -235,6 +244,18 @@ public class PetResource {
     public ResponseEntity<Pet> getPet(@PathVariable Long id) {
         log.debug("REST request to get Pet : {}", id);
         Optional<Pet> pet = petService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(pet);
+    }
+
+    @GetMapping("/pets/contract")
+    public ResponseEntity<Pet> getPetContract() {
+        SecurityUtils
+            .getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(userr -> {
+                petId = (Long.valueOf((userr.getLastName()).substring((userr.getLastName()).indexOf("-") + 1)));
+            });
+        Optional<Pet> pet = petService.findOne(petId);
         return ResponseUtil.wrapOrNotFound(pet);
     }
 

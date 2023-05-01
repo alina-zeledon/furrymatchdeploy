@@ -8,25 +8,69 @@
   </div>
   <div class="cnt-dates">
     <div class="login-wrapper">
-      <div *ngFor="let petEntry of getPetDataValues()" class="pet-entry">
-        <div class="contract-with">Mi contrato con {{ petEntry.pet.name }}</div>
-        <img *ngIf="petEntry.photo?.photoUrl" [src]="petEntry.photo?.photoUrl" alt="Pet photo" class="img-objective" />
-        <div class="txt-pet">
-          <div class="objective-text">
-            {{ petEntry.pet.name }}
+      <ng-container *ngFor="let petEntry of getPetDataValues()">
+        <div class="pet-row">
+          <div class="pet-entry">
+            <div class="contract-with">Mi contrato con {{ petEntry.pet.name }}</div>
+            <img *ngIf="petEntry.photo?.photoUrl" [src]="petEntry.photo?.photoUrl" alt="Pet photo" class="img-objective" />
+            <div class="txt-pet">
+              <div class="objective-text">
+                {{ petEntry.pet.name }}
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!petEntry.contract" class="content-wrapper">
+            <span class="content-text">
+              <h1 class="h1-black">¡Creá un contrato!</h1>
+              <p>
+                <span class="tip">Tip:</span> Antes de comenzar, te recomendamos que te pongas de acuerdo con el otro dueño(a) para poder
+                crear un contrato en la que ambas partes estén satisfechas.
+              </p>
+            </span>
+            <button class="btn-blue" (click)="saveMatchPet(petEntry.matchId, petEntry.ownerId, petEntry.pet.id)">Crear contrato</button>
+          </div>
+          <div *ngIf="isOtherUserCreatingContract(petEntry)" class="content-wrapper">
+            <span class="content-text">
+              <h1 class="h1-black">¡Tu contrato está siendo generado!</h1>
+              <p>
+                El otro dueño(a) está creando un nuevo contrato.<br />En cuanto esté generado, te avisaremos para que podás revisarlo en tu
+                corro electrónico.
+              </p>
+            </span>
+          </div>
+          <div *ngIf="isCurrentUserCreatingContract(petEntry)" class="update-confirm-contract">
+            <span class="content-text">
+              <h1 class="h1-black">¡Tu contrato está casi listo!</h1>
+              <p>
+                <span class="tip">Tip:</span> Revisa el contrato en tu correo electrónico.<br />Si hay algún detalle que cambiar, hacé clikc
+                en Editar contrato.<br />Si está todo bien, dale click en Confirmar y enviar para enviarlo al otro dueño(a).
+              </p>
+              <button class="btn-blue" routerLink="/contract/new">Editar contrato</button>
+              <button class="btn-blue" routerLink="/contract/new">Confirmar y enviar</button>
+            </span>
+          </div>
+          <div *ngIf="isOtherUserSendingContract(petEntry)" class="content-wrapper">
+            <span class="content-text">
+              <h1 class="h1-black">¡Tienes un contrato en tu correo electrónico!</h1>
+              <p>
+                <span class="tip">Tip:</span> Te recomendamos que leás el contrato con detenimiento y si todo está en order, imprimirlo para
+                que ambas partes lo firmen si están de acuerdo en cada uno de sus puntos.Además, como medida de precaución, recomendamos
+                también imprimir fotocopias de la cédula de identidad de ambas partes para corroborar las identidades.
+              </p>
+            </span>
+          </div>
+          <div *ngIf="isCurrentUserSendingContract(petEntry)" class="content-wrapper">
+            <span class="content-text">
+              <h1 class="h1-black">¡Felicidades!<br />Tu contrato ha sido creado y enviado</h1>
+              <p>
+                <span class="tip">Tip:</span> Te recomendamos imprimir el contrato y firmarlo si ambos están de acuerdo en cada uno de sus
+                puntos. Además, como medida de precaución, recomendamos también imprimir fotocopias de la cédula de identidad de ambas
+                partes para corroborar las identidades.
+              </p>
+            </span>
           </div>
         </div>
-      </div>
-      <div class="content-wrapper" *ngIf="hasNoContract()">
-        <span class="content-text">
-          <h1 class="h1-black">¡Creá un contrato!</h1>
-          <p>
-            <span class="tip">Tip:</span> Antes de comenzar, te recomendamos que te pongas de acuerdo con el otro dueño(a) para poder crear
-            un contrato en la que ambas partes estén satisfechas.
-          </p>
-        </span>
-        <button class="btn-blue">Crear contrato</button>
-      </div>
+      </ng-container>
     </div>
   </div>
 </div>

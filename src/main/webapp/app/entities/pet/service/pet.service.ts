@@ -50,6 +50,10 @@ export class PetService {
     return this.http.get<IPet>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
+  findPetContract(): Observable<EntityResponseType> {
+    return this.http.get<IPet>(`${this.resourceUrl}/contract`, { observe: 'response' });
+  }
+
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     console.log('Options: ' + options);
