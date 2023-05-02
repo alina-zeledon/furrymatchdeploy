@@ -133,4 +133,9 @@ export class ContractService {
       observe: 'response',
     });
   }
+  sendEmail(id: number | undefined): Observable<EntityResponseType> {
+    return this.http
+      .get<RestContract>(`${this.resourceUrl}/sendEmail/${id}`, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
+  }
 }

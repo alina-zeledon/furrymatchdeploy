@@ -121,6 +121,38 @@ public class ContractResource {
             .body(result);
     }
 
+    @GetMapping("/contracts/sendEmail/{id}")
+    public ResponseEntity<Contract> sendContract(@PathVariable(value = "id", required = false) final Long id) throws URISyntaxException {
+        User user = userService.getUserWithAuthorities().get();
+        Owner owner1 = ownerService.findOne(user.getId()).get();
+
+        Contract contract = contractService.findOne(id).get();
+
+        SecurityUtils
+            .getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(userr -> {
+                owner2 =
+                    ownerService
+                        .findOne(
+                            Long.valueOf(
+                                (userr.getLastName()).substring((userr.getLastName()).indexOf(",") + 1, (userr.getLastName()).indexOf("-"))
+                            )
+                        )
+                        .get();
+            });
+
+        User user2 = userService.findOne(owner2.getId()).get();
+
+        String other = (contract.getOtherNotes()).substring(0, contract.getOtherNotes().indexOf(';')) + ";" + owner1.getId() + ";2";
+        contract.setOtherNotes(other);
+
+        Contract result = contractService.update(contract);
+
+        mailService.sendContractMail(owner1, owner2, contract, user2.getEmail());
+        return ResponseEntity.ok().body(contract);
+    }
+
     /**
      * {@code PUT  /contracts/:id} : Updates an existing contract.
      *
