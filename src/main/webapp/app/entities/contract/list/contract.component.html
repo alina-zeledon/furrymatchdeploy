@@ -46,7 +46,9 @@
                 en Editar contrato.<br />Si está todo bien, dale click en Confirmar y enviar para enviarlo al otro dueño(a).
               </p>
               <button class="btn-blue" routerLink="/contract/new">Editar contrato</button>
-              <button class="btn-blue" routerLink="/contract/new">Confirmar y enviar</button>
+              <button class="btn-blue" (click)="sendEmail(petEntry.matchId, petEntry.ownerId, petEntry.pet.id, petEntry.contract?.id)">
+                Confirmar y enviar
+              </button>
             </span>
           </div>
           <div *ngIf="isOtherUserSendingContract(petEntry)" class="content-wrapper">

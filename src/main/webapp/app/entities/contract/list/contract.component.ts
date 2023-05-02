@@ -208,4 +208,19 @@ export class ContractComponent implements OnInit {
       error: () => console.log('error'),
     });
   }
+
+  sendEmail(matchId: number, ownerId: number | undefined, petId: number, contractId: number | undefined): void {
+    const matchPet = matchId + ',' + ownerId + '-' + petId;
+    this.contractService.saveMatchPet(matchPet).subscribe({
+      next: () => {
+        this.contractService.sendEmail(contractId).subscribe({
+          next: () => {
+            this.router.navigateByUrl('/contract');
+          },
+          error: () => console.log('error'),
+        });
+      },
+      error: () => console.log('error'),
+    });
+  }
 }
