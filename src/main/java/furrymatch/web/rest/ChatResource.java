@@ -71,6 +71,17 @@ public class ChatResource {
             .body(result);
     }
 
+    @PostMapping("/chats/empty")
+    public ResponseEntity<Chat> createChatEmpty(@RequestBody Long id) throws URISyntaxException {
+        Chat chat = new Chat();
+        chat.setDateChat(LocalDateTime.now());
+        Chat result = chatService.save(chat);
+        return ResponseEntity
+            .created(new URI("/api/chats/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
     /**
      * {@code PUT  /chats/:id} : Updates an existing chat.
      *

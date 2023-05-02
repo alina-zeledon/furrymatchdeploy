@@ -15,6 +15,11 @@ import { SearchCriteriaService } from '../../search-criteria/service/search-crit
 import { ISearchCriteria } from '../../search-criteria/search-criteria.model';
 import { AccountService } from '../../../core/auth/account.service';
 import { Account } from '../../../core/auth/account.model';
+import { IChat } from '../../chat/chat.model';
+import { ChatService } from '../../chat/service/chat.service';
+import { Observable } from 'rxjs';
+import { finalize, map } from 'rxjs/operators';
+import dayjs from 'dayjs/esm';
 
 @Component({
   selector: 'jhi-pet-detail',
@@ -24,7 +29,7 @@ import { Account } from '../../../core/auth/account.model';
 export class PetDetailComponent implements OnInit {
   isOwnProfile: boolean = false;
   account: Account | null = null;
-
+  isSaving = false;
   otherUserId: number | null | undefined;
 
   showGallery = false;
@@ -49,7 +54,8 @@ export class PetDetailComponent implements OnInit {
     protected petService: PetService,
     protected searchCriteriaService: SearchCriteriaService,
     private router: Router,
-    protected accountService: AccountService
+    protected accountService: AccountService,
+    protected chatService: ChatService
   ) {}
 
   ngOnInit(): void {
@@ -148,5 +154,24 @@ export class PetDetailComponent implements OnInit {
 
   previousState(): void {
     window.history.back();
+  }
+
+  goToChat(id: number): void {
+    if (this.isOwnProfile) {
+      this.router.navigate(['/chat']);
+    } else {
+      this.subscribeToSaveResponse(this.chatService.createEmpty(id));
+    }
+  }
+
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IChat>>): void {
+    result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
+      next: () => this.router.navigate(['/chat']),
+      error: () => console.log('mal'),
+    });
+  }
+
+  protected onSaveFinalize(): void {
+    this.isSaving = false;
   }
 }

@@ -107,7 +107,7 @@
         </div>
       </div>
       <div>
-        <button routerLink="/chat" class="btn-blue btn" type="submit">
+        <button (click)="goToChat(pet.id)" class="btn-blue btn" type="submit">
           {{ isOwnProfile ? 'Ir a la sección de mensajes' : '¡Chateá y conocé a tu match!' }}
         </button>
       </div>
