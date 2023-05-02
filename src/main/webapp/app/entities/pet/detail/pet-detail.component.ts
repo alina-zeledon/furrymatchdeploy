@@ -63,7 +63,6 @@ export class PetDetailComponent implements OnInit {
 
     this.accountService.getAuthenticationState().subscribe(account => {
       this.account = account;
-      console.log(this.account?.id);
     });
   }
 
@@ -167,7 +166,7 @@ export class PetDetailComponent implements OnInit {
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IChat>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
       next: () => this.router.navigate(['/chat']),
-      error: () => console.log('mal'),
+      error: () => console.log('error'),
     });
   }
 

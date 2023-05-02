@@ -25,7 +25,7 @@
   <div class="cnt-info">
     <div class="cnt-info-pet-big">
       <div class="cnt-info-pet">
-        <div class="cnt-btns-pet">
+        <div *ngIf="isOwnProfile" class="cnt-btns-pet">
           <a [routerLink]="['/pet', pet.id, 'edit']" title="Eliminar mascota">
             <img src="../content/images/delete_icon.png" />
           </a>
@@ -77,7 +77,7 @@
     <div class="cnt-info-user-fth">
       <div class="cnt-info-user">
         <div class="cnt-name">
-          <div class="cnt-btns-pet">
+          <div *ngIf="isOwnProfile" class="cnt-btns-pet">
             <a [routerLink]="['/account/settings']" title="Eliminar usuario">
               <img src="../content/images/delete_icon.png" />
             </a>
