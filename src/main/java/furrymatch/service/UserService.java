@@ -268,6 +268,10 @@ public class UserService {
         userRepository.updateUserMatchPet(matchPetId, id);
     }
 
+    public void updateUserMatch(String matchId, Long id) {
+        userRepository.updateUserMatch(matchId, id);
+    }
+
     public void deleteUser(String login) {
         userRepository
             .findOneByLogin(login)

@@ -21,6 +21,7 @@ import { LikeeService } from '../../likee/service/likee.service';
 interface PetEntry {
   pet: IPet;
   photo: IPhoto | undefined;
+  matchId: number;
 }
 
 @Component({
@@ -32,10 +33,10 @@ export class MatchComponent implements OnInit, AfterContentInit {
   matches?: IMatch[];
 
   currentPetId: number | null = null;
-  firstLikedIds: number[] = [];
-  petsIds: number[] = [];
+  firstLikedIds: { like: number; match: number }[] = [];
+  petsIds: { petId: number; match: number }[] = [];
 
-  petData: Map<number, { pet: IPet; photo: IPhoto | undefined }> = new Map();
+  petData: Map<number, { pet: IPet; photo: IPhoto | undefined; matchId: number }> = new Map();
 
   isLoading = false;
 
@@ -131,7 +132,7 @@ export class MatchComponent implements OnInit, AfterContentInit {
 
     this.matches.forEach(match => {
       if (match.firstLiked?.id) {
-        this.firstLikedIds.push(match.firstLiked.id);
+        this.firstLikedIds.push({ like: match.firstLiked.id, match: match.id });
       }
     });
     console.log('Ids en tabla de matches: ' + this.firstLikedIds);
@@ -142,9 +143,11 @@ export class MatchComponent implements OnInit, AfterContentInit {
   loadPetsFromLikee() {
     const observables: Observable<HttpResponse<ILikee>>[] = [];
 
-    this.firstLikedIds.forEach((likeeId: number) => {
-      observables.push(this.likeeService.find(likeeId));
+    this.firstLikedIds.forEach(likeeId => {
+      observables.push(this.likeeService.find(likeeId.like));
     });
+
+    let counter = 0;
 
     forkJoin(observables).subscribe((responses: HttpResponse<ILikee>[]) => {
       responses.forEach((response: HttpResponse<ILikee>) => {
@@ -152,12 +155,13 @@ export class MatchComponent implements OnInit, AfterContentInit {
 
         if (likee?.firstPet?.id === this.currentPetId || likee?.secondPet?.id === this.currentPetId) {
           if (likee.firstPet?.id && likee.firstPet.id !== this.currentPetId) {
-            this.petsIds.push(likee.firstPet.id);
+            this.petsIds.push({ petId: likee.firstPet.id, match: this.firstLikedIds[counter].match });
           }
           if (likee.secondPet?.id && likee.secondPet.id !== this.currentPetId) {
-            this.petsIds.push(likee.secondPet.id);
+            this.petsIds.push({ petId: likee.secondPet.id, match: this.firstLikedIds[counter].match });
           }
         }
+        counter++;
       });
 
       console.log('Ids en tabla de likees: ' + this.petsIds);
@@ -166,13 +170,15 @@ export class MatchComponent implements OnInit, AfterContentInit {
   }
 
   loadPetObjects() {
-    const petRequests: Observable<HttpResponse<IPet>>[] = Array.from(this.petsIds).map(petId => this.petService.find(petId));
+    const petRequests: Observable<HttpResponse<IPet>>[] = Array.from(this.petsIds).map(petId => this.petService.find(petId.petId));
 
+    let counter2 = 0;
     forkJoin(petRequests).subscribe(pets => {
       pets.forEach(petResponse => {
         if (petResponse.body) {
-          this.petData.set(petResponse.body.id, { pet: petResponse.body, photo: undefined });
+          this.petData.set(petResponse.body.id, { pet: petResponse.body, photo: undefined, matchId: this.petsIds[counter2].match });
         }
+        counter2++;
       });
 
       console.log('Pet Data (antes de fotos):', this.petData); // Agrega este mensaje de depuración
@@ -182,7 +188,7 @@ export class MatchComponent implements OnInit, AfterContentInit {
 
   loadPetPhotos() {
     const photoRequests: Observable<EntityArrayResponseType>[] = Array.from(this.petsIds).map(petId =>
-      this.photoService.findAllPhotosByPetID(petId)
+      this.photoService.findAllPhotosByPetID(petId.petId)
     );
 
     forkJoin(photoRequests).subscribe(photos => {
@@ -190,11 +196,12 @@ export class MatchComponent implements OnInit, AfterContentInit {
         console.log('Photo Response:', photoResponse);
         const photo = photoResponse.body?.length ? photoResponse.body[0] : undefined;
         if (photo) {
-          const petId = this.petsIds[index];
+          const petId = this.petsIds[index].petId;
+          const matchId = this.petsIds[index].match;
           const pet = this.petData.get(petId)?.pet;
           console.log('Pet ID:', petId, 'Pet:', pet);
           if (pet) {
-            this.petData.set(petId, { pet: pet, photo: photo });
+            this.petData.set(petId, { pet: pet, photo: photo, matchId: matchId });
             this.changeDetector.detectChanges(); // Añade esta línea
           }
         }
@@ -249,9 +256,10 @@ export class MatchComponent implements OnInit, AfterContentInit {
     }
   }
 
-  selectPet(id: number): void {
-    this.petService.selectedPet(id).subscribe({
-      next: () => this.router.navigateByUrl('/pet/' + id + '/view'),
+  selectPet(petId: number, matchId: number): void {
+    const text = matchId + ',' + petId;
+    this.matchService.saveMatchAndPet(text).subscribe({
+      next: () => this.router.navigateByUrl('/pet/' + petId + '/view'),
       error: () => console.log('error'),
     });
   }

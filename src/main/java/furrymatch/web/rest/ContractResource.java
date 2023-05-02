@@ -114,7 +114,7 @@ public class ContractResource {
         match.setContract(result);
         matchService.update(match);
 
-        //mailService.sendContractMail(owner1, owner2, contract, user.getEmail());
+        // mailService.sendContractMail(owner1, owner2, contract, user.getEmail());
         return ResponseEntity
             .created(new URI("/api/contracts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))

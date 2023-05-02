@@ -1,8 +1,13 @@
 package furrymatch.web.rest;
 
 import furrymatch.domain.Chat;
+import furrymatch.domain.Match;
 import furrymatch.repository.ChatRepository;
+import furrymatch.repository.UserRepository;
+import furrymatch.repository.UserRepository;
+import furrymatch.security.SecurityUtils;
 import furrymatch.service.ChatService;
+import furrymatch.service.MatchService;
 import furrymatch.service.UserService;
 import furrymatch.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -44,10 +49,24 @@ public class ChatResource {
 
     private final UserService userService;
 
-    public ChatResource(ChatService chatService, ChatRepository chatRepository, UserService userService) {
+    private final MatchService matchService;
+
+    private final UserRepository userRepository;
+
+    private Match match;
+
+    public ChatResource(
+        ChatService chatService,
+        ChatRepository chatRepository,
+        UserService userService,
+        UserRepository userRepository,
+        MatchService matchService
+    ) {
         this.chatService = chatService;
         this.chatRepository = chatRepository;
         this.userService = userService;
+        this.userRepository = userRepository;
+        this.matchService = matchService;
     }
 
     /**
@@ -75,6 +94,13 @@ public class ChatResource {
     public ResponseEntity<Chat> createChatEmpty(@RequestBody Long id) throws URISyntaxException {
         Chat chat = new Chat();
         chat.setDateChat(LocalDateTime.now());
+        SecurityUtils
+            .getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(userr -> {
+                match = matchService.findOne(Long.valueOf((userr.getFirstName()).substring(0, (userr.getFirstName()).indexOf(",")))).get();
+                chat.setMatch(match);
+            });
         Chat result = chatService.save(chat);
         return ResponseEntity
             .created(new URI("/api/chats/" + result.getId()))
