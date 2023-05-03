@@ -1,8 +1,13 @@
 package furrymatch.web.rest;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import furrymatch.domain.Pet;
 import furrymatch.domain.SearchCriteria;
 import furrymatch.repository.PetRepository;
+import furrymatch.repository.UserRepository;
+import furrymatch.security.SecurityUtils;
+import furrymatch.service.OwnerService;
 import furrymatch.service.PetService;
 import furrymatch.service.SearchCriteriaService;
 import furrymatch.service.UserService;
@@ -10,12 +15,14 @@ import furrymatch.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -46,16 +53,25 @@ public class PetResource {
 
     private final SearchCriteriaService searchCriteriaService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+    private final UserRepository userRepository;
+
+    private Long petId;
+
     public PetResource(
         PetService petService,
         PetRepository petRepository,
         UserService userService,
-        SearchCriteriaService searchCriteriaService
+        SearchCriteriaService searchCriteriaService,
+        UserRepository userRepository,
+        OwnerService ownerService
     ) {
         this.petService = petService;
         this.petRepository = petRepository;
         this.userService = userService;
         this.searchCriteriaService = searchCriteriaService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -97,15 +113,21 @@ public class PetResource {
      * {@code PUT  /pets/:id} : Updates an existing pet.
      *
      * @param id the id of the pet to save.
-     * @param pet the pet to update.
+     * @param requestData a Map containing the pet to update and a list of photo IDs to delete.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated pet,
      * or with status {@code 400 (Bad Request)} if the pet is not valid,
      * or with status {@code 500 (Internal Server Error)} if the pet couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+
     @PutMapping("/pets/{id}")
-    public ResponseEntity<Pet> updatePet(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Pet pet)
-        throws URISyntaxException {
+    public ResponseEntity<Pet> updatePet(
+        @PathVariable(value = "id", required = false) final Long id,
+        @RequestBody Map<String, Object> requestData
+    ) throws URISyntaxException {
+        Pet pet = objectMapper.convertValue(requestData.get("pet"), Pet.class);
+        List<Long> photosToDelete = objectMapper.convertValue(requestData.get("photosToDelete"), new TypeReference<List<Long>>() {});
+
         log.debug("REST request to update Pet : {}, {}", id, pet);
         if (pet.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -118,12 +140,34 @@ public class PetResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Pet result = petService.update(pet);
+        Pet result = petService.update(pet, photosToDelete);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, pet.getId().toString()))
             .body(result);
     }
+
+    //    @PutMapping("/pets/{id}")
+    //    public ResponseEntity<Pet> updatePet(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Pet pet)
+    //        throws URISyntaxException {
+    //        log.debug("REST request to update Pet : {}, {}", id, pet);
+    //        if (pet.getId() == null) {
+    //            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+    //        }
+    //        if (!Objects.equals(id, pet.getId())) {
+    //            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+    //        }
+    //
+    //        if (!petRepository.existsById(id)) {
+    //            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+    //        }
+    //
+    //        Pet result = petService.update(pet);
+    //        return ResponseEntity
+    //            .ok()
+    //            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, pet.getId().toString()))
+    //            .body(result);
+    //    }
 
     /**
      * {@code PATCH  /pets/:id} : Partial updates given fields of an existing pet, field will ignore if it is null
@@ -200,6 +244,18 @@ public class PetResource {
     public ResponseEntity<Pet> getPet(@PathVariable Long id) {
         log.debug("REST request to get Pet : {}", id);
         Optional<Pet> pet = petService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(pet);
+    }
+
+    @GetMapping("/pets/contract")
+    public ResponseEntity<Pet> getPetContract() {
+        SecurityUtils
+            .getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(userr -> {
+                petId = (Long.valueOf((userr.getLastName()).substring((userr.getLastName()).indexOf("-") + 1)));
+            });
+        Optional<Pet> pet = petService.findOne(petId);
         return ResponseUtil.wrapOrNotFound(pet);
     }
 

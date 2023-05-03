@@ -96,9 +96,15 @@ public class ContractResource {
             .getCurrentUserLogin()
             .flatMap(userRepository::findOneByLogin)
             .ifPresent(userr -> {
-                owner2 = ownerService.findOne(Long.valueOf((userr.getLastName()).substring((userr.getLastName()).indexOf(",") + 1))).get();
+                owner2 =
+                    ownerService
+                        .findOne(
+                            Long.valueOf(
+                                (userr.getLastName()).substring((userr.getLastName()).indexOf(",") + 1, (userr.getLastName()).indexOf("-"))
+                            )
+                        )
+                        .get();
                 match = matchService.findOne(Long.valueOf((userr.getLastName()).substring(0, (userr.getLastName()).indexOf(",")))).get();
-                System.out.println(match);
             });
 
         String other = contract.getOtherNotes() + ";" + owner1.getId() + ";1";
@@ -108,11 +114,43 @@ public class ContractResource {
         match.setContract(result);
         matchService.update(match);
 
-        //mailService.sendContractMail(owner1, owner2, contract, user.getEmail());
+        // mailService.sendContractMail(owner1, owner2, contract, user.getEmail());
         return ResponseEntity
             .created(new URI("/api/contracts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+
+    @GetMapping("/contracts/sendEmail/{id}")
+    public ResponseEntity<Contract> sendContract(@PathVariable(value = "id", required = false) final Long id) throws URISyntaxException {
+        User user = userService.getUserWithAuthorities().get();
+        Owner owner1 = ownerService.findOne(user.getId()).get();
+
+        Contract contract = contractService.findOne(id).get();
+
+        SecurityUtils
+            .getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(userr -> {
+                owner2 =
+                    ownerService
+                        .findOne(
+                            Long.valueOf(
+                                (userr.getLastName()).substring((userr.getLastName()).indexOf(",") + 1, (userr.getLastName()).indexOf("-"))
+                            )
+                        )
+                        .get();
+            });
+
+        User user2 = userService.findOne(owner2.getId()).get();
+
+        String other = (contract.getOtherNotes()).substring(0, contract.getOtherNotes().indexOf(';')) + ";" + owner1.getId() + ";2";
+        contract.setOtherNotes(other);
+
+        Contract result = contractService.update(contract);
+
+        //mailService.sendContractMail(owner1, owner2, contract, user2.getEmail());
+        return ResponseEntity.ok().body(contract);
     }
 
     /**
@@ -143,14 +181,27 @@ public class ContractResource {
         }
         User user = userService.getUserWithAuthorities().get();
         Owner owner1 = ownerService.findOne(user.getId()).get();
-        Owner owner2 = ownerService.findOne(Long.valueOf(4)).get();
+
+        SecurityUtils
+            .getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(userr -> {
+                owner2 =
+                    ownerService
+                        .findOne(
+                            Long.valueOf(
+                                (userr.getLastName()).substring((userr.getLastName()).indexOf(",") + 1, (userr.getLastName()).indexOf("-"))
+                            )
+                        )
+                        .get();
+            });
 
         String other = contract.getOtherNotes() + ";" + owner1.getId() + ";1";
         contract.setOtherNotes(other);
 
         Contract result = contractService.update(contract);
 
-        mailService.sendContractMail(owner1, owner2, contract, user.getEmail());
+        //mailService.sendContractMail(owner1, owner2, contract, user.getEmail());
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, contract.getId().toString()))

@@ -6,7 +6,7 @@
   <div class="cnt-dates">
     <h2>¡Hacé click para conocer más de ellos y charlar con su dueño o dueña!</h2>
     <div class="login-wrapper">
-      <div *ngFor="let petEntry of getPetDataValues()" (click)="selectPet(petEntry.pet.id)">
+      <div *ngFor="let petEntry of getPetDataValues()" (click)="selectPet(petEntry.pet.id, petEntry.matchId)">
         <img *ngIf="petEntry.photo?.photoUrl" [src]="petEntry.photo?.photoUrl" alt="Pet photo" class="img-objective" />
         <div class="txt-pet">
           <div class="objective-text">

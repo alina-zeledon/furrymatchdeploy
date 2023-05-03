@@ -36,6 +36,10 @@ export class ChatService {
     return this.http.post<RestChat>(this.resourceUrl, copy, { observe: 'response' }).pipe(map(res => this.convertResponseFromServer(res)));
   }
 
+  createEmpty(id: number): Observable<EntityResponseType> {
+    return this.http.post<IChat>(`${this.resourceUrl}/empty`, id, { observe: 'response' });
+  }
+
   update(chat: IChat): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(chat);
     return this.http

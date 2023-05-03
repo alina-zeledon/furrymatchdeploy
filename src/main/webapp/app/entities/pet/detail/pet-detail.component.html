@@ -25,14 +25,14 @@
   <div class="cnt-info">
     <div class="cnt-info-pet-big">
       <div class="cnt-info-pet">
-        <div class="cnt-btns-pet">
+        <div *ngIf="isOwnProfile" class="cnt-btns-pet">
           <a [routerLink]="['/pet', pet.id, 'edit']" title="Eliminar mascota">
             <img src="../content/images/delete_icon.png" />
           </a>
           <a [routerLink]="['/pet', pet.id, 'edit']" title="Actualizar mascota">
             <img src="../content/images/update_icon.png" />
           </a>
-          <div (click)="updateSearchCriteria()" title="Actualizar filtros">
+          <div class="upd-hover" (click)="updateSearchCriteria()" title="Actualizar filtros">
             <img src="../content/images/btn_filters.png" />
           </div>
         </div>
@@ -77,7 +77,7 @@
     <div class="cnt-info-user-fth">
       <div class="cnt-info-user">
         <div class="cnt-name">
-          <div class="cnt-btns-pet">
+          <div *ngIf="isOwnProfile" class="cnt-btns-pet">
             <a [routerLink]="['/account/settings']" title="Eliminar usuario">
               <img src="../content/images/delete_icon.png" />
             </a>
@@ -107,7 +107,9 @@
         </div>
       </div>
       <div>
-        <button routerLink="" class="btn-blue btn" type="submit">¡Chateá y conocé a tu match!</button>
+        <button (click)="goToChat(pet.id)" class="btn-blue btn" type="submit">
+          {{ isOwnProfile ? 'Ir a la sección de mensajes' : '¡Chateá y conocé a tu match!' }}
+        </button>
       </div>
     </div>
   </div>

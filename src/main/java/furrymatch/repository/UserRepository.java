@@ -45,4 +45,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "UPDATE jhi_user SET last_name = :matchPetId WHERE id = :id", nativeQuery = true)
     void updateUserMatchPet(@Param("matchPetId") String matchPetId, @Param("id") Long id);
+
+    @Modifying
+    @Query(value = "UPDATE jhi_user SET first_name = :matchId WHERE id = :id", nativeQuery = true)
+    void updateUserMatch(@Param("matchId") String matchId, @Param("id") Long id);
+
+    @Query(value = "SELECT * FROM jhi_user WHERE id = :id", nativeQuery = true)
+    Optional<User> findOne(@Param("id") Long id);
 }

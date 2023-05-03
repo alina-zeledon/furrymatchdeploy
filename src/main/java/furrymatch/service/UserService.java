@@ -3,6 +3,7 @@ package furrymatch.service;
 import furrymatch.config.Constants;
 import furrymatch.domain.Authority;
 import furrymatch.domain.Owner;
+import furrymatch.domain.Pet;
 import furrymatch.domain.User;
 import furrymatch.repository.AuthorityRepository;
 import furrymatch.repository.OwnerRepository;
@@ -268,6 +269,10 @@ public class UserService {
         userRepository.updateUserMatchPet(matchPetId, id);
     }
 
+    public void updateUserMatch(String matchId, Long id) {
+        userRepository.updateUserMatch(matchId, id);
+    }
+
     public void deleteUser(String login) {
         userRepository
             .findOneByLogin(login)
@@ -407,5 +412,11 @@ public class UserService {
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<User> findOne(Long id) {
+        log.debug("Request to get Pet : {}", id);
+        return userRepository.findOne(id);
     }
 }

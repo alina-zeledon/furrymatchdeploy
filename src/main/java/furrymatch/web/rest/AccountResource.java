@@ -321,4 +321,14 @@ public class AccountResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, "user", id.toString()))
             .build();
     }
+
+    @PostMapping("/account/saveMatch/{matchId}")
+    public ResponseEntity<Void> updateUserMatch(@PathVariable(value = "matchId", required = false) final String matchId) {
+        Long id = userService.getUserWithAuthorities().get().getId();
+        userService.updateUserMatch(matchId, id);
+        return ResponseEntity
+            .noContent()
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, "user", id.toString()))
+            .build();
+    }
 }
