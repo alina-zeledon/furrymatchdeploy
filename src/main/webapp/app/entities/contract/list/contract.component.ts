@@ -59,6 +59,7 @@ export class ContractComponent implements OnInit {
   trackId = (_index: number, item: IContract): number => this.contractService.getContractIdentifier(item);
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.loadSearchCriteriaForCurrentUser();
 
     // Listen for route changes
@@ -86,6 +87,7 @@ export class ContractComponent implements OnInit {
     return undefined;
   }
   loadMatchedPetsAndContracts(): void {
+    this.isLoading = true;
     this.contractService.getMatchedPetsAndContracts(this.currentPetId).subscribe(response => {
       this.matchedPetsAndContracts = response.body || [];
       console.log('QUERY RESULTS!!!' + JSON.stringify(this.matchedPetsAndContracts, null, 2));
@@ -149,6 +151,7 @@ export class ContractComponent implements OnInit {
 
       console.log('Pet Data:', this.petData);
     });
+    this.isLoading = false;
   }
   isCurrentUserCreatingContract(petEntry: PetEntry): boolean {
     if (!petEntry.contract || !petEntry.contract.otherNotes) {
