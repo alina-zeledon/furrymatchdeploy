@@ -100,9 +100,9 @@ p {
 }
 .no-contract {
   text-align: center;
-  font-weight: normal;
-  color: black;
   margin: 100px;
+  color: var(--clr-orange);
+  font: var(--typo-title);
 }
 
 .btn-palid-orange {
