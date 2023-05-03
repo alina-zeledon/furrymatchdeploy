@@ -217,6 +217,7 @@ export class ContractComponent implements OnInit {
         this.contractService.sendEmail(contractId).subscribe({
           next: () => {
             this.router.navigateByUrl('/contract');
+            this.loadMatchedPetsAndContracts();
           },
           error: () => console.log('error'),
         });
