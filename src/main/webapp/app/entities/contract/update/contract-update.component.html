@@ -1,16 +1,16 @@
 <div class="cnt-princ" xmlns="http://www.w3.org/1999/html">
   <div class="cnt-sec">
-    <h1 class="title">Mensajes</h1>
-    <div class="secondary-text">¡Chatea con tus amistades humanas para conocer nuevas amistades peludas!</div>
+    <h1 class="title">Contratos</h1>
+    <div class="secondary-text">
+      En FurryMatch nos tomamos en serio tu seguridad y la de tus mascotas. <br />Es por eso que en esta sección tenés la posibilidad de
+      crear contratos que podrás personalizar antes de realizar el cruce de tu mascota.
+    </div>
   </div>
   <div>
     <div class="wrapper">
       <div class="profile-wrapper">
-        <div class="text-profile">Mi contrato con Lili</div>
-        <img
-          src="https://res.cloudinary.com/alocortesu/image/upload/v1681426636/furry_match_user_pics/pa0b05yrvhp8qqwxxudw.png"
-          class="img-profile"
-        />
+        <div class="text-profile">Mi contrato con {{ pet?.name }}</div>
+        <img src="{{ petImages[0].photoUrl }}" class="img-profile" />
       </div>
       <div class="inputs-wrapper">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">

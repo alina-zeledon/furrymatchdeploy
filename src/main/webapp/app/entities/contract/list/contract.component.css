@@ -45,7 +45,8 @@ p {
 .pet-entry {
   position: relative;
   display: inline-block;
-  margin-right: 50px;
+  margin-right: 30px;
+  width: 22%;
 }
 
 .txt-pet {
@@ -97,4 +98,20 @@ p {
   display: flex;
   vertical-align: top; /* To align it with the pet-entry */
   margin-top: 57px;
+}
+.no-contract {
+  text-align: center;
+  margin: 100px;
+  color: var(--clr-orange);
+  font: var(--typo-title);
+}
+
+.btn-palid-orange {
+  padding: 8px 25px;
+  background-color: var(--clr-palid-orange);
+  font: var(--typo-button);
+  color: var(--clr-orange);
+  transition: background-color ease-in 300ms;
+  border: none;
+  margin-right: 28px;
 }

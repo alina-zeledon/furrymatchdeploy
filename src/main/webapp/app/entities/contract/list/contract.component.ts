@@ -59,6 +59,7 @@ export class ContractComponent implements OnInit {
   trackId = (_index: number, item: IContract): number => this.contractService.getContractIdentifier(item);
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.loadSearchCriteriaForCurrentUser();
 
     // Listen for route changes
@@ -86,11 +87,13 @@ export class ContractComponent implements OnInit {
     return undefined;
   }
   loadMatchedPetsAndContracts(): void {
+    this.isLoading = true;
     this.contractService.getMatchedPetsAndContracts(this.currentPetId).subscribe(response => {
       this.matchedPetsAndContracts = response.body || [];
       console.log('QUERY RESULTS!!!' + JSON.stringify(this.matchedPetsAndContracts, null, 2));
       this.loadPetPhotos(); // Call loadPetPhotos() after populating matchedPetsAndContracts
     });
+    console.log('This matched pet contracts ' + this.matchedPetsAndContracts);
   }
   getOtherPetIds(): number[] {
     if (!this.currentPetId || !this.matchedPetsAndContracts) {
@@ -148,6 +151,7 @@ export class ContractComponent implements OnInit {
 
       console.log('Pet Data:', this.petData);
     });
+    this.isLoading = false;
   }
   isCurrentUserCreatingContract(petEntry: PetEntry): boolean {
     if (!petEntry.contract || !petEntry.contract.otherNotes) {
@@ -196,15 +200,31 @@ export class ContractComponent implements OnInit {
   }
 
   getPetDataValues(): PetEntry[] {
-    console.log('PET DATA VALUES', this.petData.values());
+    //console.log('PET DATA VALUES', this.petData.values());
     return Array.from(this.petData.values());
   }
 
-  saveMatchPet(matchId: number, petId: number | undefined): void {
-    const matchPet = matchId + ',' + petId;
+  saveMatchPet(matchId: number, ownerId: number | undefined, petId: number): void {
+    const matchPet = matchId + ',' + ownerId + '-' + petId;
     this.contractService.saveMatchPet(matchPet).subscribe({
       next: () => this.router.navigateByUrl('/contract/new'),
       // next: () => this.router.navigateByUrl('/search-criteria/new'),
+      error: () => console.log('error'),
+    });
+  }
+
+  sendEmail(matchId: number, ownerId: number | undefined, petId: number, contractId: number | undefined): void {
+    const matchPet = matchId + ',' + ownerId + '-' + petId;
+    this.contractService.saveMatchPet(matchPet).subscribe({
+      next: () => {
+        this.contractService.sendEmail(contractId).subscribe({
+          next: () => {
+            this.router.navigateByUrl('/contract');
+            this.loadMatchedPetsAndContracts();
+          },
+          error: () => console.log('error'),
+        });
+      },
       error: () => console.log('error'),
     });
   }

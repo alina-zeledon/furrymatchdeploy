@@ -115,6 +115,7 @@ a {
   margin-right: var(--margin-min);
 }
 
+.upd-hover:hover:after,
 a[title]:hover:after {
   content: attr(title);
   background-color: var(--clr-white);

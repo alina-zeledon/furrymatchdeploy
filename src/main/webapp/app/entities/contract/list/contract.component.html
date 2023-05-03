@@ -27,7 +27,7 @@
                 crear un contrato en la que ambas partes estén satisfechas.
               </p>
             </span>
-            <button class="btn-blue" (click)="saveMatchPet(petEntry.matchId, petEntry.ownerId)">Crear contrato</button>
+            <button class="btn-blue" (click)="saveMatchPet(petEntry.matchId, petEntry.ownerId, petEntry.pet.id)">Crear contrato</button>
           </div>
           <div *ngIf="isOtherUserCreatingContract(petEntry)" class="content-wrapper">
             <span class="content-text">
@@ -45,8 +45,10 @@
                 <span class="tip">Tip:</span> Revisa el contrato en tu correo electrónico.<br />Si hay algún detalle que cambiar, hacé clikc
                 en Editar contrato.<br />Si está todo bien, dale click en Confirmar y enviar para enviarlo al otro dueño(a).
               </p>
-              <button class="btn-blue" routerLink="/contract/new">Editar contrato</button>
-              <button class="btn-blue" routerLink="/contract/new">Confirmar y enviar</button>
+              <button class="btn-palid-orange" [routerLink]="['/contract', petEntry.contract?.id, 'edit']">Editar contrato</button>
+              <button class="btn-blue" (click)="sendEmail(petEntry.matchId, petEntry.ownerId, petEntry.pet.id, petEntry.contract?.id)">
+                Confirmar y enviar
+              </button>
             </span>
           </div>
           <div *ngIf="isOtherUserSendingContract(petEntry)" class="content-wrapper">
@@ -71,6 +73,10 @@
           </div>
         </div>
       </ng-container>
+      <div *ngIf="!matchedPetsAndContracts || matchedPetsAndContracts.length === 0">
+        <h1 *ngIf="!isLoading" class="no-contract">No tienes ningún contrato.</h1>
+        <h1 *ngIf="isLoading" class="no-contract">Cargando...</h1>
+      </div>
     </div>
   </div>
 </div>

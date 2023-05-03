@@ -34,12 +34,24 @@ export class PetService {
     return this.http.put<IPet>(`${this.resourceUrl}/${this.getPetIdentifier(pet)}`, pet, { observe: 'response' });
   }
 
+  updateWithPhotosToDelete(pet: IPet, photosToDelete: number[]): Observable<EntityResponseType> {
+    const requestData = {
+      pet: pet,
+      photosToDelete: photosToDelete,
+    };
+    return this.http.put<IPet>(`${this.resourceUrl}/${this.getPetIdentifier(pet)}`, requestData, { observe: 'response' });
+  }
+
   partialUpdate(pet: PartialUpdatePet): Observable<EntityResponseType> {
     return this.http.patch<IPet>(`${this.resourceUrl}/${this.getPetIdentifier(pet)}`, pet, { observe: 'response' });
   }
 
   find(id: number): Observable<EntityResponseType> {
     return this.http.get<IPet>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  findPetContract(): Observable<EntityResponseType> {
+    return this.http.get<IPet>(`${this.resourceUrl}/contract`, { observe: 'response' });
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {
@@ -89,5 +101,10 @@ export class PetService {
 
   getPetInSession(): Observable<HttpResponse<number>> {
     return this.http.get<number>(`${this.resourceUrl}/current`, { observe: 'response' });
+  }
+
+  getMatchByPetId(petId: number): Observable<HttpResponse<number>> {
+    const apiUrl = SERVER_API_URL + 'api/pets/match';
+    return this.http.get<number>(`${apiUrl}/${petId}`, { observe: 'response' });
   }
 }

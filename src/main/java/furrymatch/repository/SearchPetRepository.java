@@ -54,13 +54,21 @@ public class SearchPetRepository {
         }
 
         if (filters.getTradePups() != null) {
-            Predicate tradePupsPredicate = criteriaBuilder.equal(petRoot.get("tradePups"), filters.getTradePups());
+            Boolean tradePupsBoolean = Boolean.valueOf(filters.getTradePups());
+            Predicate tradePupsPredicate = criteriaBuilder.equal(petRoot.get("tradePups"), tradePupsBoolean);
             predicates.add(tradePupsPredicate);
         }
 
         if (filters.getPedigree() != null) {
-            Predicate pedigreePredicate = criteriaBuilder.equal(petRoot.get("pedigree"), filters.getPedigree());
+            Boolean pedigreeBoolean = Boolean.valueOf(filters.getPedigree());
+            Predicate pedigreePredicate = criteriaBuilder.equal(petRoot.get("pedigree"), pedigreeBoolean);
             predicates.add(pedigreePredicate);
+        }
+
+        if (filters.getTradeMoney() != null) {
+            Boolean tradeMoneyBoolean = Boolean.valueOf(filters.getTradeMoney());
+            Predicate tradeMoneyPredicate = criteriaBuilder.equal(petRoot.get("tradeMoney"), tradeMoneyBoolean);
+            predicates.add(tradeMoneyPredicate);
         }
 
         //join condition between Pet and Owner

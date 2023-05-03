@@ -67,8 +67,14 @@ export class SearchCriteriaUpdateComponent implements OnInit {
       this.searchCriteria = searchCriteria;
       if (searchCriteria) {
         this.updateForm(searchCriteria);
-        this.getCantones(Number(searchCriteria.provice));
-        this.getDistricts(Number(searchCriteria.provice), Number(searchCriteria.canton));
+        if (searchCriteria.provice) {
+          this.selectedProvinceId = searchCriteria.provice;
+          this.getCantones(Number(searchCriteria.provice));
+          if (searchCriteria.canton) {
+            this.selectedCantonId = searchCriteria.canton;
+            this.getDistricts(Number(searchCriteria.provice), Number(searchCriteria.canton));
+          }
+        }
       }
       this.registerService.getProvinces().subscribe((response: any) => {
         const provincesArray = Object.entries(response).map(([id, name]) => ({ id, name }));
@@ -118,7 +124,11 @@ export class SearchCriteriaUpdateComponent implements OnInit {
       confirmButtonColor: '#3381f6',
       confirmButtonText: 'Cerrar',
     }).then((result: any) => {
-      this.router.navigate(['/pet']);
+      if (this.searchCriteria?.id) {
+        this.router.navigate(['/pet/search']);
+      } else {
+        this.router.navigate(['/pet']);
+      }
     });
   }
 
@@ -178,6 +188,9 @@ export class SearchCriteriaUpdateComponent implements OnInit {
       this.selectedCantonId = null;
       this.cantones = null;
       this.districts = null;
+      this.editForm.controls['provice'].reset();
+      this.editForm.controls['canton'].reset();
+      this.editForm.controls['district'].reset();
     }
   }
 
@@ -185,10 +198,13 @@ export class SearchCriteriaUpdateComponent implements OnInit {
     const selectedCantonId = parseInt(e.target.value);
     if (selectedCantonId) {
       this.selectedCantonId = selectedCantonId;
+      this.editForm.controls['district'].setValue(null);
       this.getDistricts(this.selectedProvinceId, selectedCantonId);
     } else {
       this.selectedCantonId = null;
       this.districts = null;
+      this.editForm.controls['canton'].reset();
+      this.editForm.controls['district'].reset();
     }
   }
 

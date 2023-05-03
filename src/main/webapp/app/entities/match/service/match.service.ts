@@ -29,6 +29,7 @@ export type EntityArrayResponseType = HttpResponse<IMatch[]>;
 @Injectable({ providedIn: 'root' })
 export class MatchService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/matches');
+  protected accountUrl = this.applicationConfigService.getEndpointFor('api/account/saveMatch');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
@@ -123,6 +124,12 @@ export class MatchService {
   protected convertResponseArrayFromServer(res: HttpResponse<RestMatch[]>): HttpResponse<IMatch[]> {
     return res.clone({
       body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
+    });
+  }
+
+  saveMatchAndPet(matchPetId: string): Observable<HttpResponse<{}>> {
+    return this.http.post<HttpResponse<{}>>(`${this.accountUrl}/${matchPetId}`, {
+      observe: 'response',
     });
   }
 }
