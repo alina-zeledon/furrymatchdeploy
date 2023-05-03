@@ -28,6 +28,7 @@ export class SearchMatchComponent implements OnInit {
   filters: ISearchCriteria | null = null;
   newCurrentPetIndex?: number;
   noMorePets = false;
+  loading = false;
 
   constructor(
     private searchCriteriaService: SearchCriteriaService,
@@ -39,6 +40,7 @@ export class SearchMatchComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loading = true;
     this.loadPets();
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -54,6 +56,7 @@ export class SearchMatchComponent implements OnInit {
         console.log('All Pets ', JSON.stringify(this.pets, null, 2));
         this.currentPetIndex = 0;
         this.findPetInSession();
+        this.loading = false;
         //this.loadSearchCriteriaForCurrentUser();
       },
       error => {
