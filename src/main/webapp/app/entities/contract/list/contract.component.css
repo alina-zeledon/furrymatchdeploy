@@ -98,3 +98,19 @@ p {
   vertical-align: top; /* To align it with the pet-entry */
   margin-top: 57px;
 }
+.no-contract {
+  text-align: center;
+  font-weight: normal;
+  color: black;
+  margin: 100px;
+}
+
+.btn-palid-orange {
+  padding: 8px 25px;
+  background-color: var(--clr-palid-orange);
+  font: var(--typo-button);
+  color: var(--clr-orange);
+  transition: background-color ease-in 300ms;
+  border: none;
+  margin-right: 28px;
+}

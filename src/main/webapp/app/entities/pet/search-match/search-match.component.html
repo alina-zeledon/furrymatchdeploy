@@ -1,4 +1,7 @@
-<img class="objective-type" src="../content/images/Group 27.png" />
+<a routerLink="/search-criteria/new">
+  <img class="objective-type" src="../content/images/Group 27.png" />
+</a>
+
 <div class="objective-txt">
   <div>Estoy buscando:</div>
   <div *ngIf="filters?.objective === '1'">Otras mascotas para cruzarlas</div>
@@ -16,7 +19,7 @@
                 <div class="objective-text bg-image">
                   {{ pets[currentPetIndex].name }}
                   <div class="pet-breed">
-                    {{ pets[currentPetIndex]?.breed?.breed }}
+                    {{ pets[currentPetIndex].breed?.breed }}
                     <span *ngIf="pets[currentPetIndex]?.breed?.breed">,</span>
                     <span *ngIf="pets[currentPetIndex]?.owner?.province === '1'">San José</span>
                     <span *ngIf="pets[currentPetIndex]?.owner?.province === '2'">Alajuela</span>

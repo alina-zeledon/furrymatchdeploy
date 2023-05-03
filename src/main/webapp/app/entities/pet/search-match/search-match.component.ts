@@ -85,55 +85,6 @@ export class SearchMatchComponent implements OnInit {
       }
     });
   }
-  /*
-  loadSearchCriteriaForCurrentUser(): void {
-    this.accountService.identity().subscribe(user => {
-      this.petService.getPetInSession().subscribe(response => {
-        this.currentPetId = response.body;
-        console.log('PET ID: ' + this.currentPetId);
-
-        if (this.currentPetId !== null) {
-          this.searchCriteriaService.findByPetId(this.currentPetId).subscribe(
-            (res: SearchCriteriaEntityResponseType) => {
-              this.filters = res.body;
-              console.log('User Search Criteria From DB: ' + JSON.stringify(this.filters, null, 2));
-              console.log('Pet Displayed', JSON.stringify(this.pets[this.currentPetIndex], null, 2));
-              // Calls the search function with the searchCriteria object
-              //this.loadPets(searchCriteria);
-            },
-            error => {
-              console.error('Error fetching search criteria for user:', error);
-            }
-          );
-        } else {
-          console.error('The currentPetId is null. Unable to fetch search criteria for user.');
-        }
-      });
-    });
-  }
-*/
-  /*
-  loadSearchCriteriaForCurrentUser(): void {
-    this.accountService.identity().subscribe(user => {
-      if (user) {
-        // imageUrl is pet in session
-        this.currentPetId = parseInt(user.imageUrl);
-        console.log('PET ID: ' + this.currentPetId );
-        this.searchCriteriaService.find(this.currentPetId ).subscribe(
-          (res: SearchCriteriaEntityResponseType) => {
-            this.filters = res.body;
-            console.log('User Search Criteria From DB: ' + JSON.stringify(this.filters, null, 2));
-            console.log('Pet Displayed', JSON.stringify(this.pets[this.currentPetIndex], null, 2));
-            // Calls the search function with the searchCriteria object
-            //this.loadPets(searchCriteria);
-          },
-          error => {
-            console.error('Error fetching search criteria for user:', error);
-          }
-        );
-      }
-    });
-  }*/
   private moveToNextPet(): void {
     if (this.currentPetIndex < this.pets.length - 1) {
       this.currentPetIndex++;

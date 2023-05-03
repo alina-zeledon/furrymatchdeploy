@@ -91,6 +91,7 @@ export class ContractComponent implements OnInit {
       console.log('QUERY RESULTS!!!' + JSON.stringify(this.matchedPetsAndContracts, null, 2));
       this.loadPetPhotos(); // Call loadPetPhotos() after populating matchedPetsAndContracts
     });
+    console.log('This matched pet contracts ' + this.matchedPetsAndContracts);
   }
   getOtherPetIds(): number[] {
     if (!this.currentPetId || !this.matchedPetsAndContracts) {
@@ -196,7 +197,7 @@ export class ContractComponent implements OnInit {
   }
 
   getPetDataValues(): PetEntry[] {
-    console.log('PET DATA VALUES', this.petData.values());
+    //console.log('PET DATA VALUES', this.petData.values());
     return Array.from(this.petData.values());
   }
 
