@@ -102,7 +102,14 @@
               </div>
             </div>
             <div class="cnt-row2">
-              <div class="cnt-txt disabled-tooltip" data-tooltip="Estos campos están deshabilitados porque ya tienes contratos generados.">
+              <div class="cnt-txt">
+                <div
+                  *ngIf="hasMatch"
+                  class="disabled-tooltip"
+                  data-tooltip="Estos campos están deshabilitados porque ya tienes contratos generados"
+                >
+                  <p></p>
+                </div>
                 <label class="lbl-txt" for="field_petType">Tipo de mascota</label>
                 <select class="form-control" name="petType" formControlName="petType" id="field_petType" data-cy="petType">
                   <option [ngValue]="null">{{ 'furryMatchApp.PetType.null' | translate }}</option>
@@ -117,16 +124,30 @@
                 </div>
               </div>
 
-              <div class="cnt-txt disabled-tooltip" data-tooltip="Estos campos están deshabilitados porque ya tienes contratos generados.">
-                <label class="form-label">Raza</label>
+              <div class="cnt-txt">
+                <div
+                  *ngIf="hasMatch"
+                  class="disabled-tooltip"
+                  data-tooltip="Estos campos están deshabilitados porque ya tienes contratos generados"
+                >
+                  <p></p>
+                </div>
+                <label class="form-label lbl-txt">Raza</label>
                 <select class="form-control" id="field_breed" formControlName="breed">
                   <option [ngValue]="null"></option>
                   <option *ngFor="let breed of filteredBreedsSharedCollection" [ngValue]="breed">{{ breed.breed }}</option>
                 </select>
               </div>
 
-              <div class="cnt-txt disabled-tooltip" data-tooltip="Estos campos están deshabilitados porque ya tienes contratos generados.">
-                <label class="form-label" for="field_sex">Sexo</label>
+              <div class="cnt-txt">
+                <div
+                  *ngIf="hasMatch"
+                  class="disabled-tooltip"
+                  data-tooltip="Estos campos están deshabilitados porque ya tienes contratos generados"
+                >
+                  <p></p>
+                </div>
+                <label class="form-label lbl-txt" for="field_sex">Sexo</label>
                 <select class="form-control" name="sex" formControlName="sex" id="field_sex" data-cy="sex">
                   <option [ngValue]="null">{{ 'furryMatchApp.Sex.null' | translate }}</option>
                   <option *ngFor="let sex of sexValues" [value]="sex">{{ 'furryMatchApp.Sex.' + sex | translate }}</option>
@@ -139,10 +160,14 @@
               </div>
             </div>
             <div class="cnt-row3">
-              <div
-                class="cnt-orange disabled-tooltip"
-                data-tooltip="Estos campos están deshabilitados porque ya tienes contratos generados."
-              >
+              <div class="cnt-orange">
+                <div
+                  *ngIf="hasMatch"
+                  class="disabled-tooltip"
+                  data-tooltip="Estos campos están deshabilitados porque ya tienes contratos generados"
+                >
+                  <p></p>
+                </div>
                 <div class="cnt-orange-row1">
                   <p class="txt-disc">
                     <mark class="txt-disc-orange">¿Tu objetivo es cruzar a tu mascota?&nbsp;</mark>
