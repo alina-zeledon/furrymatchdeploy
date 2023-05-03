@@ -2,7 +2,7 @@
   "furryMatchApp": {
     "contract": {
       "home": {
-        "title": "Contracts",
+        "title": "Mis contratos",
         "refreshListLabel": "Refresh list",
         "createLabel": "Create a new Contract",
         "createOrEditLabel": "Create or edit a Contract",

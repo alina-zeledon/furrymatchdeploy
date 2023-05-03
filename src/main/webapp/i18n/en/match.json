@@ -2,7 +2,7 @@
   "furryMatchApp": {
     "match": {
       "home": {
-        "title": "Matches",
+        "title": "Mis matches",
         "refreshListLabel": "Refresh list",
         "createLabel": "Create a new Match",
         "createOrEditLabel": "Create or edit a Match",

@@ -178,3 +178,40 @@ mark.txt-disc-orange {
   flex-direction: column;
   text-align: center;
 }
+
+input:disabled,
+select:disabled {
+  background-color: var(--clr-palid-orange);
+  border-color: var(--clr-orange);
+}
+
+.cbox-wrapper:has(input:disabled) {
+  background-color: var(--clr-palid-orange); /* Cambia a tu color de fondo deseado */
+}
+
+.cnt-txt.disabled-tooltip,
+.cnt-orange.disabled-tooltip {
+  position: relative;
+}
+
+.cnt-txt.disabled-tooltip::before,
+.cnt-orange.disabled-tooltip::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -1.5em; /* Ajusta la posición vertical del tooltip */
+  left: 0; /* Ajusta la posición horizontal del tooltip */
+  padding: 5px 10px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 5px;
+  font-size: 0.8em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.cnt-txt.disabled-tooltip:hover::before,
+.cnt-orange.disabled-tooltip:hover::before {
+  opacity: 1;
+}

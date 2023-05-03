@@ -27,6 +27,8 @@ import dayjs from 'dayjs/esm';
 })
 export class PetUpdateComponent implements OnInit {
   isSaving = false;
+  hasMatch = false;
+
   pet: IPet | null = null;
   petTypeValues = Object.keys(PetType);
   sexValues = Object.keys(Sex);
@@ -43,7 +45,7 @@ export class PetUpdateComponent implements OnInit {
 
   petPhotoData: { file: File; photoObj: IPhoto; customId: string }[] = [];
 
-  editForm: PetFormGroup = this.petFormService.createPetFormGroup();
+  editForm: PetFormGroup = this.petFormService.createPetFormGroup(undefined, this.hasMatch);
 
   pets: IPet[] = [];
   petFiles: File[] = [];
@@ -89,6 +91,16 @@ export class PetUpdateComponent implements OnInit {
       });
 
     this.loadPets();
+
+    if (this.pet && this.pet.id !== undefined) {
+      this.petService.getMatchByPetId(this.pet?.id).subscribe((response: HttpResponse<number>) => {
+        this.hasMatch = response.body !== null;
+        console.log('Tiene match id?: ' + this.hasMatch);
+
+        // Actualiza el formulario con los campos deshabilitados si es necesario
+        this.editForm = this.petFormService.createPetFormGroup(this.pet || undefined, this.hasMatch);
+      });
+    }
   }
 
   loadExistingPetPhotos(): void {

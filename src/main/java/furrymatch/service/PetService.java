@@ -226,6 +226,10 @@ public class PetService {
         return newPets;
     }
 
+    public Long findMatchByPetId(Long petId) {
+        return petRepository.findMatchByPetId(petId).orElse(null);
+    }
+
     /**
      * Get one pet by id.
      *
