@@ -124,7 +124,11 @@ export class SearchCriteriaUpdateComponent implements OnInit {
       confirmButtonColor: '#3381f6',
       confirmButtonText: 'Cerrar',
     }).then((result: any) => {
-      this.router.navigate(['/pet']);
+      if (this.searchCriteria?.id) {
+        this.router.navigate(['/pet/search']);
+      } else {
+        this.router.navigate(['/pet']);
+      }
     });
   }
 
