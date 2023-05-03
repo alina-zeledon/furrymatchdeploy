@@ -61,6 +61,7 @@ export class ChatComponent implements OnInit {
       if (result.body) {
         this.chats = result.body.filter((value, index, self) => self.findIndex(v => v.id === value.id) === index);
         //this.chats = result.body;
+        console.log(this.chats);
         let array2: IOwner[] = [];
         const array = [...this.chats];
         array.forEach((item, index) => {
@@ -71,6 +72,9 @@ export class ChatComponent implements OnInit {
           }
           this.chatArrays = array2;
         });
+        if (this.chats.length < 1) {
+          this.chatArrays = [];
+        }
       }
     });
   }
@@ -99,6 +103,8 @@ export class ChatComponent implements OnInit {
       if (result.isConfirmed) {
         this.chatService.delete(id).subscribe(result => {
           this.listChats();
+          this.onChatWindowClose();
+          // this.loadUnreadChats();
         });
       } else if (result.isDenied) {
         console.log('no');
