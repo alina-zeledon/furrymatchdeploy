@@ -102,4 +102,9 @@ export class PetService {
   getPetInSession(): Observable<HttpResponse<number>> {
     return this.http.get<number>(`${this.resourceUrl}/current`, { observe: 'response' });
   }
+
+  getMatchByPetId(petId: number): Observable<HttpResponse<number>> {
+    const apiUrl = SERVER_API_URL + 'api/pets/match';
+    return this.http.get<number>(`${apiUrl}/${petId}`, { observe: 'response' });
+  }
 }

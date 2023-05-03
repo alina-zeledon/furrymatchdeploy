@@ -32,7 +32,7 @@
           </div>
         </div>
         <ng-template #noMorePetsTemplate>
-          <h1 class="no-more-pets-message">No hay más mascotas que mostrar, ¡vuelve más tarde!</h1>
+          <h1 class="no-more-pets-message">No hay más mascotas que mostrar.<br />¡Vuelve más tarde!</h1>
         </ng-template>
       </div>
       <div *ngIf="pets.length > 0 && currentPetIndex < pets.length && !noMorePets">

@@ -2,7 +2,7 @@
   "furryMatchApp": {
     "pet": {
       "home": {
-        "title": "Pets",
+        "title": "Mis mascotas",
         "refreshListLabel": "Refresh list",
         "createLabel": "Create a new Pet",
         "createOrEditLabel": "Create or edit a Pet",
@@ -15,7 +15,7 @@
         "question": "Are you sure you want to delete Pet {{ id }}?"
       },
       "detail": {
-        "title": "Pet"
+        "title": "Mascota"
       },
       "id": "ID",
       "name": "Name",

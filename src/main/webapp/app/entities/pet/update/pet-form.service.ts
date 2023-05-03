@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { IPet, NewPet } from '../pet.model';
-import {IPhoto} from "../../photo/photo.model";
+import { IPhoto } from '../../photo/photo.model';
 
 /**
  * A partial Type with required key is used as form input.
@@ -37,7 +37,7 @@ export type PetFormGroup = FormGroup<PetFormGroupContent>;
 
 @Injectable({ providedIn: 'root' })
 export class PetFormService {
-  createPetFormGroup(pet: PetFormGroupInput = { id: null }): PetFormGroup {
+  createPetFormGroup(pet: PetFormGroupInput = { id: null }, hasMatch: boolean = false): PetFormGroup {
     const petRawValue = {
       ...this.getFormDefaults(),
       ...pet,
@@ -53,29 +53,33 @@ export class PetFormService {
       name: new FormControl(petRawValue.name, {
         validators: [Validators.required],
       }),
-      petType: new FormControl(petRawValue.petType, {
-        validators: [Validators.required],
-      }),
+      petType: new FormControl(
+        { value: petRawValue.petType, disabled: hasMatch },
+        {
+          validators: [Validators.required],
+        }
+      ),
       description: new FormControl(petRawValue.description, {
         validators: [Validators.required],
       }),
-      sex: new FormControl(petRawValue.sex, {
-        validators: [Validators.required],
-      }),
-      tradeMoney: new FormControl(petRawValue.tradeMoney),
-      tradePups: new FormControl(petRawValue.tradePups),
-      pedigree: new FormControl(petRawValue.pedigree),
-      desireAmmount: new FormControl(petRawValue.desireAmmount),
+      sex: new FormControl(
+        { value: petRawValue.sex, disabled: hasMatch },
+        {
+          validators: [Validators.required],
+        }
+      ),
+      tradeMoney: new FormControl({ value: petRawValue.tradeMoney, disabled: hasMatch }),
+      tradePups: new FormControl({ value: petRawValue.tradePups, disabled: hasMatch }),
+      pedigree: new FormControl({ value: petRawValue.pedigree, disabled: hasMatch }),
+      desireAmmount: new FormControl({ value: petRawValue.desireAmmount, disabled: hasMatch }),
       owner: new FormControl(petRawValue.owner),
-      breed: new FormControl(petRawValue.breed),
+      breed: new FormControl({ value: petRawValue.breed, disabled: hasMatch }),
       uploadDate: new FormControl(null, {
         nonNullable: true,
       }),
       photoUrl: new FormControl('', {
         validators: [Validators.required],
       }),
-
-
     });
   }
 

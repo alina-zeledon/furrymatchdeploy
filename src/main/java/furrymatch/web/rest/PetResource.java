@@ -55,6 +55,7 @@ public class PetResource {
 
     @Autowired
     private ObjectMapper objectMapper;
+
     private final UserRepository userRepository;
 
     private Long petId;
@@ -257,6 +258,12 @@ public class PetResource {
             });
         Optional<Pet> pet = petService.findOne(petId);
         return ResponseUtil.wrapOrNotFound(pet);
+    }
+
+    @GetMapping("/pets/match/{petId}")
+    public ResponseEntity<Long> getMatchByPetId(@PathVariable Long petId) {
+        Long matchId = petService.findMatchByPetId(petId);
+        return ResponseEntity.ok().body(matchId);
     }
 
     /**

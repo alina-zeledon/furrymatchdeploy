@@ -2,7 +2,7 @@
   "furryMatchApp": {
     "chat": {
       "home": {
-        "title": "Chats",
+        "title": "Mis chats",
         "refreshListLabel": "Refresh list",
         "createLabel": "Create a new Chat",
         "createOrEditLabel": "Create or edit a Chat",
